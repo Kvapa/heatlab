@@ -1,0 +1,26 @@
+<%= form_for(@main_worklist) do |f| %>
+  <% if @main_worklist.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@main_worklist.errors.count, "error") %> prohibited this main_worklist from being saved:</h2>
+
+      <ul>
+      <% @main_worklist.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name, "Název docházky" %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :year, "Rok" %><br />
+    <%= f.date_select :year, :order => [:year], :disabled => (params[:action]=="edit") ? true : false %>
+   
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,117 @@
+<h3><%= link_to 'Projekty', projects_path %> > <%= Project.find(params[:project_id]).workname %> > Přehled úvazků </b></h3>
+
+<% (@project.start_date.year..@project.end_date.year).each do |y| %>
+	<% if y.to_s==params[:year] %> 
+		<b><%= link_to  y, project_jobcheck_path(@project) + "/" + y.to_s %></b><br />
+	<% else %>
+		<%= link_to  y, project_jobcheck_path(@project) + "/" + y.to_s %> <br />
+	<% end %>	
+<% end %>
+<br />
+<hr>
+<br />
+<h2> <%= params[:year] %> </h2>
+<%= link_to 'xls', '/projects/'+params[:project_id]+'/jobcheck/'+params[:year]+'/export_xls' %>
+<br /><h3>Zaměstnanci (hodiny týdně)</h3>
+<%= form_tag(:controller => "projects", :action => "jobcheck_update", :method => "put")%> 
+<table>
+	<tr>
+	    <th>Jméno</th>
+	    <th>Leden</th>
+	    <th>Únor</th>
+	    <th>Březen</th>
+	    <th>Duben</th>
+	    <th>Květen</th>
+	    <th>Červen</th>
+	    <th>Červenec</th>
+	    <th>Srpen</th>
+	    <th>Září</th>
+	    <th>Říjen</th>
+	    <th>Listopad</th>
+	    <th>Prosinec</th>
+	    <th>Počet hodin týdně</th>
+  	</tr>
+	<% @jobs.each do |job| %>
+	<tr>
+		<td>
+			<% user = User.find(job.user_id) %>
+			<%= user.surname + " " + user.firstname %>
+		</td>
+		<% (1..12).each do |n| %>
+   			<% @month=Jobmonth.where("job_id=? and month=?",job.id, Date.new(params[:year].to_i,n).beginning_of_month) %>
+   			<td><center><%= @month[0].workload if @month[0]  %><br /><%=  check_box(job.id, n, {}, 1, 0) if @month[0] %> </center> </td>
+    	<% end %>
+    	<td><center><%=  text_field(job.id,"hours",:maxlength => 4) %></center></td>
+	</tr>
+	<% end %>
+	<tr>
+	    <th>Jméno</th>
+	    <th>Leden</th>
+	    <th>Únor</th>
+	    <th>Březen</th>
+	    <th>Duben</th>
+	    <th>Květen</th>
+	    <th>Červen</th>
+	    <th>Červenec</th>
+	    <th>Srpen</th>
+	    <th>Září</th>
+	    <th>Říjen</th>
+	    <th>Listopad</th>
+	    <th>Prosinec</th>
+	    <th>Počet hodin týdně</th>
+  	</tr>
+</table>
+<hr>
+<br />
+<% if !@jobsDPP.blank? %>
+	<h3>Dohoda o provedení práce (hodiny měsíčně)</h3>
+	<table>
+		<tr>
+		    <th>Jméno</th>
+		    <th>Leden</th>
+		    <th>Únor</th>
+		    <th>Březen</th>
+		    <th>Duben</th>
+		    <th>Květen</th>
+		    <th>Červen</th>
+		    <th>Červenec</th>
+		    <th>Srpen</th>
+		    <th>Září</th>
+		    <th>Říjen</th>
+		    <th>Listopad</th>
+		    <th>Prosinec</th>
+		    <th>Počet hodin měsíčně</th>
+	  	</tr>
+		<% @jobsDPP.each do |job| %>
+		<tr>
+			<td>
+				<% user = User.find(job.user_id) %>
+				<%= user.surname + " " + user.firstname %>
+			</td>
+			<% (1..12).each do |n| %>
+	   			<% @month=Jobmonth.where("job_id=? and month=?",job.id, Date.new(params[:year].to_i,n).beginning_of_month) %>
+	   			<td><center><%= @month[0].workload if @month[0] %><br /><%=  check_box(job.id, n, {}, 1, 0) if @month[0] %> </center> </td>
+	    	<% end %>
+	    	<td><center><%=  text_field(job.id,"hours",:maxlength => 4) %></center></td>
+		</tr>
+		<% end %>
+		<tr>
+		    <th>Jméno</th>
+		    <th>Leden</th>
+		    <th>Únor</th>
+		    <th>Březen</th>
+		    <th>Duben</th>
+		    <th>Květen</th>
+		    <th>Červen</th>
+		    <th>Červenec</th>
+		    <th>Srpen</th>
+		    <th>Září</th>
+		    <th>Říjen</th>
+		    <th>Listopad</th>
+		    <th>Prosinec</th>
+		    <th>Počet hodin měsíčně</th>
+	  	</tr>
+	</table>
+	<br />
+<% end %>
+<%= submit_tag "Uložit" %>

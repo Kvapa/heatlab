@@ -1,0 +1,13 @@
+<h1>Přihlásit se</h1>
+
+<%= form_tag sessions_path do %>
+  <div class="field">
+    <%= label_tag :login,"Přihlašovací jméno" %><br />
+    <%= text_field_tag :login, params[:login] %>
+  </div>
+  <div class="field">
+    <%= label_tag :password, "Heslo" %><br />
+    <%= password_field_tag :password %>
+  </div>
+  <div class="actions"><%= submit_tag "Přihlásit" %></div>
+<% end %>

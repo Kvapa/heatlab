@@ -1,0 +1,161 @@
+<p><%= link_to "Zpět na přehled měsíců", "/my_projects/" + params[:my_project_id] + "/" + params[:job_id] %> <br/></p>
+
+Jméno: <b><%= @user.surname + " " + @user.firstname  %></b> <br />
+Projekt: <b><%= @project.workname %></b> <br />
+Pozice: <b><%= ProjectPosition.find(@job.position).name.gsub(/\(.*?\)/, '') %></b> <br />
+Období: <b><%= params[:month] + "/" + params[:year] %> </b> <br />
+Úvazek: <b><%= @month[0].workload  %>
+<% if @job.usertype == 0 %>
+	hodin/týden
+<% else %>
+	hodin/měsíc
+<% end %></b> <br />
+
+<hr>
+<p>Součet: <b><%= @sum_hours.round(2) %> hodin/měsíc</b> <br /></p>
+<% if  @job.usertype == 0 && @job.joined
+		if @main_jobmonth[0].locked == false
+			noaccess = true
+		else
+			noaccess = false	
+		end 
+
+	else
+		noaccess = false
+   end
+%>
+<% if noaccess %>
+	<b>Nemáte dovoleno vyplnit výkaz. Obraťte se na administrátora.</b>
+<% else %>
+	<table width="1240">
+		<tr>
+	    <th>Datum</th>
+	    <th>Den v týdnu</th>
+	    <th>Typ dne</th>
+
+	    <% if @project.xls == 1 %>
+	    	<th>Popis práce</th>
+	    <% elsif @project.xls == 2 %>
+	    	<th>Název pracovní činnosti</th>
+	    	<th>Popis vykonaných aktivit</th>
+	    <% end %>
+	    <th>Počet hodin</th>
+	  	</tr>
+	  	<% events_ids=Array.new %>
+
+	  	<%= form_tag(:controller => "my_projects", :action => "worklist_update", :method => "put") %> 
+		<% for jobday in @jobdays %>
+			<%= fields_for "jobdays[]",jobday do |f| %>
+				<% if @job.usertype == 0 && @job.joined %>
+				<% 	test1=MainJobday.where("main_job_id=? AND day=?",@main_job[0].id,jobday.day)[0]
+			  		test2='';
+			  		if @job.joined
+				  		if test1.day_status == 5 && !(test1.work_trip == params[:my_project_id].to_i)
+				  			jobday.day_status=2
+				  			jobday.save
+				  		else
+				  			jobday.day_status=test1.day_status
+				  			jobday.save
+				  		end
+				  	end
+				  	if test1.work_trip == nil 
+				  		test1.work_trip = 0
+				  	end
+			  		if test1.work_trip == params[:my_project_id].to_i
+			  			test2=test1.trip_town
+			  		elsif test1.work_trip > 0
+			  			test2 =  Project.find(test1.work_trip).workname 
+			  		end
+				  	
+				  	%>
+				  	<% else
+				  		test1=MainJobday.new 
+				  		test1.work_trip = 0
+				  		%>
+				  	<% end %>	
+				  	<% if @job.usertype == 1 && jobday.day_status == 1
+						jobday.day_status = 0
+						jobday.save
+					end %>
+				  	<tr class="d<%= jobday.day_status %>">
+					<td><%= (jobday.day).strftime("%d.%m.%Y") %></td>
+					<td><%= wday_to_name((jobday.day).wday) %></td>
+					<% status=['Nepracovní den','Svátek','Pracovní den','Dovolená','Nemoc','Služební cesta']%>
+					
+					<% if (@job.joined && @job.usertype == 0 ) || @month[0].checked  %>
+						<td><%= status[jobday.day_status] %></td>
+					<% else %>
+						<td><%= f.select :day_status, [['Pracovní den', 2],['Služební cesta', 5],['Nepracovní den', 0],['Dovolená', 3],['Nemocenská',4],['Svátek', 1]],{}, {:disabled => ((jobday.day.wday == 6 || jobday.day.wday == 0 || jobday.day_status == 1 ) ? true : false)} %></td>
+					<% end %>
+					<% if jobday.day_status ==3
+						jobday.description=''
+						jobday.save
+					end %>
+					<% if @project.xls == 1 %>
+						<% if @month[0].checked %>
+							<td><%= jobday.description %></td>
+						<% else %>
+				  			<td><%= f.text_field :description, :maxlength => 110, :class =>:autocomplete, data: {autocomplete_source: project_job_worklist_autocomplete_path(params[:my_project_id],@job.id) }, :disabled => ((jobday.day_status == 1 || jobday.day_status == 0 || jobday.day_status == 3  ) ? true : false) %></td>
+				  		<% end %>
+				  	<% elsif @project.xls == 2 %>
+				  		<td><%= f.text_field :name_wa, :maxlength =>55, :disabled => ((jobday.day.wday == 6 || jobday.day.wday == 0 || jobday.day_status == 1 || jobday.day_status == 0  ) ? true : false) %></td>
+				  		<td><%= f.text_field :description_wa, :maxlength =>55, :disabled => ((jobday.day.wday == 6 || jobday.day.wday == 0 || jobday.day_status == 1 || jobday.day_status == 0  ) ? true : false) %></td>
+				  	<% end %>
+				  		<% if @job.usertype == 0 && @job.joined %>
+						  	<% if @main_jobmonth[0].workdays? && (jobday.day_status == 1 || jobday.day_status == 2 || jobday.day_status == 4 || jobday.day_status == 3|| jobday.day_status == 5  )%>
+						  		<% if @job.usertype == 0 && @project.id != 8 %>
+						  			<% jobday.hours=@month[0].workload.to_f / @main_jobmonth[0].workdays.to_f  %>
+						  		<% end %>	
+						  	<% end %>
+						 <% end %>
+					  	<% if @month[0].checked %>
+					  		<td> <%= jobday.hours %></td>	
+					  	<% else %>
+					  		<td><%= f.text_field :hours, :maxlength =>4 %></td>
+					  	<% end %>
+				  	<% if test1.work_trip > 0 %>
+					  			<td><a href="#" onmouseover="pop_up('travel_<%= jobday.id%>')" onmouseout="pop_down('travel_<%= jobday.id%>')">Cesta</a>
+					  				<div id="event_travel_<%= jobday.id%>" style="display:none" title="Pracovní cesta">
+												<b>Projekt:</b> <%= Project.find(test1.work_trip).workname %><br />
+												<b>Místo:</b> <%= test1.trip_town %><br />
+											</div>
+					  			</td>
+				  			<% end %>
+				  			
+			  			<% @events.where("day <= ? AND date_until >= ?",jobday.day,jobday.day).each do |event| %>
+						<% if !event.users.where("user_id = ?",@user.id).blank?%>
+							<td><a href="#" onmouseover='pop_up(<%= event.id %>)' onmouseout='pop_down(<%= event.id %>)'>Akce</a>
+								<% if !events_ids.include?(event.id) %> 
+									<div id="event_<%= event.id %>" style="display:none" title="Informace o akci">
+										<b>Název:</b> <%= event.name %><br />
+										<b>Popis:</b> <%= event.description %><br />
+										<b>Projekt:</b> <%= Project.find(event.project_id).workname %><br />
+										<b>Od:</b> <%= event.day.strftime('%d.%m.%Y') %><br />
+										<b>Do:</b> <%= event.date_until.strftime('%d.%m.%Y') %><br />
+									</div>
+								<% end %>
+								<% events_ids = events_ids.push(event.id).uniq %>
+							</td>
+						<% end %>	 
+					<% end %>	
+				</tr>	
+			<% end %>
+		<% end %>
+	</table>
+	<br />
+	<p><%= fields_for @month[0] do |faa| %>
+	 	Výkaz vyplněn: <%=faa.hidden_field :id %>
+  	<%=faa.check_box :filled %>
+	<% end %>
+	</p>
+	<% if @month[0].checked || @project.id == 8  %>
+		<%= link_to 'Export do xls', '/projects/'+params[:my_project_id]+'/jobs/'+@job.id.to_s+'/worklist/'+params[:year]+'/'+params[:month]+'/export_xls' %>
+	<% end %>
+	<br />	
+	<br />
+	<% if !@month[0].checked %>
+		<%= submit_tag "Uložit" %>
+	<% end %>
+	
+<% end %>
+

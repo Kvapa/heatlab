@@ -1,0 +1,5 @@
+<h3><%= link_to 'Projekty', projects_path %> > <%= Project.find(params[:project_id]).workname %> > <%= link_to 'Akce', project_events_path(@project) %> > <%= link_to 'Přehled skupin', project_eventgroups_path(@project) %> > Editace skupiny</h3>
+
+<%= render 'form' %>
+
+<%= link_to 'Zpět', project_eventgroups_path %>

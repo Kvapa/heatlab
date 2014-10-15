@@ -1,0 +1,84 @@
+
+<br />
+<%= link_to content_tag(:span,"Základní údaje"), users_path, :class=>"button" %>
+<%= link_to content_tag(:span,"Smlouvy"), contract_users_path, :class=>"button" %>
+<%= link_to content_tag(:span,"Elektrotechnická kvalifikace"), vyhlaska_users_path, :class=>"button" %>
+<%= link_to content_tag(:span,"Důchod"), retire_users_path, :class=>"button" %>
+<br />
+<br />
+
+<br />
+<h2> Základní údaje </h2>
+
+<p><%= link_to content_tag(:span,"Nový uživatel"), new_user_path, :class=>"button" %></p>
+<br />
+<br />
+<p>
+<h3>Heatlab</h3>
+<table>
+  <tr>
+
+    <th>Příjmení</th>
+    <th>Jméno</th>
+    <th>Celé jméno</th>
+    <th>Osobní číslo</th>
+    <th>Login</th>
+    <th>Email</th>
+    <th>Admin</th>
+    <th>Datum narození</th>
+    <th></th>
+    <th></th>
+  </tr>
+
+
+<% @users.each do |user| %>
+  <tr>
+    <td><%= user.surname %></td>
+    <td><%= user.firstname %></td>
+    <td><%= user.fullname %></td>
+    <td><%= user.personal_number %></td>
+    <td><%= user.login %></td>
+    <td><%= user.email %></td>
+    <td><% if user.admin? %> ano <% else %> ne <% end %></td>
+    <td><%= user.birthday.strftime('%d.%m.%Y') if !user.birthday.blank? %></td>
+    <td><%= link_to 'Editovat', edit_user_path(user) %></td>
+    <td><%= link_to 'Smazat', user, method: :delete, data: { confirm: 'Opravdu chcete smazat uživatele?' } %></td>
+  </tr>
+<% end %>
+</table></p>
+<hr>
+<h3>Externisti</h3>
+<table>
+  <tr>
+
+    <th>Příjmení</th>
+    <th>Jméno</th>
+    <th>Celé jméno</th>
+    <th>Osobní číslo</th>
+    <th>Login</th>
+    <th>Email</th>
+    <th>Admin</th>
+    <th>Datum narození</th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @users_ex.each do |user| %>
+  <tr>
+    <td><%= user.surname %></td>
+    <td><%= user.firstname %></td>
+    <td><%= user.fullname %></td>
+    <td><%= user.personal_number %></td>
+    <td><%= user.login %></td>
+    <td><%= user.email %></td>
+    <td><% if user.admin? %> ano <% else %> ne <% end %></td>
+    <td><%= user.birthday.strftime('%d.%m.%Y') if !user.birthday.blank? %></td>
+    <td><%= link_to 'Editovat', edit_user_path(user) %></td>
+    <td><%= link_to 'Smazat', user, method: :delete, data: { confirm: 'Opravdu chcete smazat uživatele?' } %></td>
+  </tr>
+<% end %>
+</table></p>
+
+
+
+

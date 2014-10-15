@@ -1,0 +1,18 @@
+<h3><%= link_to 'Projekty', projects_path %> > <%= Project.find(params[:project_id]).workname %> > Přehled pracovních pozic </h3>
+
+
+<ul id="project_positions" data-update-url="<%= sort_project_project_positions_url %>">
+<% @project_positions.each do |project_position| %>
+  <%= content_tag_for :li, project_position do %>
+    <span class="handle">[přesunout]</span>
+    <%= project_position.name %>
+    <%= link_to 'Činnosti', project_project_position_project_activities_path(@project,project_position) %>
+    <%= link_to 'Změnit', edit_project_project_position_path(@project,project_position) %>
+    <%= link_to 'Smazat', project_project_position_path(@project,project_position), method: :delete, data: { confirm: 'Are you sure?' } %>
+  <% end %>
+<% end %>
+</ul>
+
+<br />
+
+<%= link_to 'Nová pracovní pozice', new_project_project_position_path %>

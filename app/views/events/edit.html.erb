@@ -1,0 +1,6 @@
+<h3><%= link_to 'Projekty', projects_path %> > <%= Project.find(params[:project_id]).workname %> > <%= link_to 'Akce', project_events_path(@project) %> > Změna akce</h3>
+
+<%= render 'form' %>
+
+
+<%= link_to 'Back', project_events_path %>

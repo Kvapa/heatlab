@@ -1,0 +1,29 @@
+<p>
+  <h3><%= link_to 'Hlavní docházka', main_worklists_path %></h3>
+</p>
+
+<p>
+<table>
+  <tr>
+    <th>Název</th>
+    <th>Rok</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @main_worklists.each do |main_worklist| %>
+  <tr>
+    <td><%= main_worklist.name %></td>
+    <td><%= (main_worklist.year).year %></td>
+    <td><%= link_to 'Docházka', main_worklist_main_jobs_path(main_worklist) %></td>
+    <td><%= link_to 'Změnit', edit_main_worklist_path(main_worklist) %></td>
+    <td><%= link_to 'Smazat', main_worklist, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'Nová hlavní docházka', new_main_worklist_path %>
+</p>

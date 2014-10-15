@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @main_worklist.name %>
+</p>
+
+<p>
+  <b>Year:</b>
+  <%= @main_worklist.year %>
+</p>
+
+
+<%= link_to 'Edit', edit_main_worklist_path(@main_worklist) %> |
+<%= link_to 'Back', main_worklists_path %>

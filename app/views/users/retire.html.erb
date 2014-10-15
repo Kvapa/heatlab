@@ -1,0 +1,25 @@
+<br />
+<%= link_to content_tag(:span,"Základní údaje"), users_path, :class=>"button" %>
+<%= link_to content_tag(:span,"Smlouvy"), contract_users_path, :class=>"button" %>
+<%= link_to content_tag(:span,"Elektrotechnická kvalifikace"), vyhlaska_users_path, :class=>"button" %>
+<%= link_to content_tag(:span,"Důchod"), retire_users_path, :class=>"button" %>
+<br />
+<br />
+
+
+<br />
+<h2> Důchod </h2>
+<p>
+<table>
+  <tr>
+    <th>Osoba</th>
+    <th>Odchod do důchodu</th>
+  </tr>
+<% @users.each do |user| %>
+  <tr>
+    <td><%= user.surname %> <%= user.firstname %></td>
+    <td><%= user.contract_end.strftime('%d.%m.%Y') %></td>
+  </tr>
+<% end %>
+</table>
+</p>

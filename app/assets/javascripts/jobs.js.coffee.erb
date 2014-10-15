@@ -1,0 +1,43 @@
+# Place all the behaviors and hooks related to the matching controller here.
+# All this logic will automatically be available in application.js.
+# You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
+jQuery ->
+	$('.autocomplete').autocomplete(
+	    source: $('.autocomplete').data('autocomplete-source')
+  		minLength: 0
+	    ).focus ->
+	      $(this).autocomplete "search",  ""
+    	
+  	$('.dpp').hide()
+
+	$('.usertype').change ->
+		if $('.usertype option:selected').val() is '1'
+			$('.dpp').show()
+			$('.join').hide()
+		else
+			$('.dpp').hide()	
+			$('.join').show()	
+
+	$('#job_start_date_proper').datepicker
+		changeMonth: true
+		changeYear: true
+		dateFormat: 'dd.mm.yy'
+		firstDay: 1 
+		monthNamesShort: [ "Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec" ]
+
+	$('#job_end_date_proper').datepicker
+		changeMonth: true
+		changeYear: true
+		dateFormat: 'dd.mm.yy'
+		firstDay: 1 
+		monthNamesShort: [ "Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec" ]	
+
+	root = exports ? this
+	root.pop_up = (id) -> 
+		$('#event_'+id).dialog(
+			width: 'auto'
+		)
+		$('#event_'+id).dialog "open"
+
+	root.pop_down = (id) ->
+		$('#event_'+id).dialog "close"

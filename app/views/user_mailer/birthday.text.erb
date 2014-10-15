@@ -1,0 +1,19 @@
+
+
+Příští týden
+============
+<% @users1.each do |user| %>
+<% age =0 %>
+<% age = user.birthday.change(:year =>Time.now.year).year-user.birthday.year %>
+<% age += 1 if user.birthday.yday < Time.now.yday %>
+<%= user.birthday.strftime('%d.%m.')+ ' ' + user.surname + ' ' +user.firstname+', '+age.to_s+' let'  %>
+<% end %>
+
+Dále
+====
+<% @users2.each do |user| %>
+<% age =0 %>
+<% age = user.birthday.change(:year =>Time.now.year).year-user.birthday.year %>
+<% age += 1 if user.birthday.yday < Time.now.yday %>
+<%= user.birthday.strftime('%d.%m.')+ ' ' + user.surname + ' ' +user.firstname+', '+age.to_s+' let'  %>
+<% end %>

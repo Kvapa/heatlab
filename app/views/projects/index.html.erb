@@ -1,0 +1,35 @@
+<h3><%= link_to 'Projekty', projects_path %></h3><br />
+
+<table>
+  <tr>
+    <th>Pracovní název</th>
+    <th>Název</th>
+    <th>Začátek</th>
+    <th>Konec</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+<% belongsto=["VUT","FSI"] %>
+<% @projects.each do |project| %>
+  <tr>
+    <td><b><%= project.workname %></b> (<%= belongsto[project.belongsto] %>)</td>
+    <td><%= project.name %></td>
+    <td><%= project.start_date.strftime('%d.%m.%Y') %></td>
+    <td><%= project.end_date.strftime('%d.%m.%Y') %></td>
+    <td><%= link_to 'Lidé', project_jobs_path(project) %></td>
+    <td><%= link_to 'Přehled úvazků', project_jobcheck_path(project) %></td>
+    <td><%= link_to 'Akce', project_events_path(project) %></td>
+    <td><%= link_to 'Pozice', project_project_positions_path(project) %></td> 
+    <td><%= link_to 'Editovat', edit_project_path(project) %></td> 
+    <td><%= link_to 'Smazat', project, method: :delete, data: { confirm: 'Opravdu chcete smazat projekt?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'Nový projekt', new_project_path %>

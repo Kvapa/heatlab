@@ -1,0 +1,31 @@
+<%= form_for [@main_worklist,@main_job] do |f| %>
+  <% if @main_job.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@main_job.errors.count, "error") %> prohibited this main_job from being saved:</h2>
+
+      <ul>
+      <% @main_job.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :user_id, "Uživatel" %><br />
+    <% ids = MainJob.all(:select => "user_id", :conditions=> ["main_worklist_id = ?", params[:main_worklist_id]]).collect(&:user_id) %>
+    <%if ids.empty?
+        ids=[0]
+      end
+       %>
+      <% if params[:action]=="edit" %> 
+      <%= collection_select(:main_job,:user_id, User.all, :id, :sur_firstname, options ={:prompt => "---"},:disabled =>  true  )  %>
+     <% else %>  
+      <%= collection_select(:main_job,:user_id, User.find(:all, :conditions => ["id NOT IN (?)", ids], :order => "surname ASC"), :id, :sur_firstname, options ={:prompt => "---"},:disabled => (params[:action]=="edit") ? true : false )  %>
+     <% end %>
+  </div>
+  <%= f.hidden_field :main_worklist_id, :value => params[:main_worklist_id] %>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,5 @@
+<h3><%= link_to 'Projekty', projects_path %> > <%= Project.find(params[:project_id]).workname %> > <%= link_to 'Lidé', project_jobs_path(params[:project_id]) %> > Nový úvazek</h3>
+
+<%= render 'form' %>
+
+<%= link_to 'Zpět', project_jobs_path %>

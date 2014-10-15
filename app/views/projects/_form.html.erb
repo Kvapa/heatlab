@@ -1,0 +1,45 @@
+<%= form_for(@project) do |f| %>
+  <% if @project.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@project.errors.count, "error") %> prohibited this project from being saved:</h2>
+
+      <ul>
+      <% @project.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name,"Název projektu" %><br />
+    <%= f.text_field :name %>
+  </div>
+   <div class="field">
+    <%= f.label :workname, "Pracovní název" %><br />
+    <%= f.text_field :workname %>
+  </div>
+  <div class="field">
+    <%= f.label :number,"Číslo projektu" %><br />
+    <%= f.text_field :number %>
+  </div>
+  <div class="field">
+    <%= f.label :start_date, "Začátek" %><br />
+     <%= f.text_field :start_date_proper,:disabled => (params[:action]=="edit") ? true : false %>
+  </div>
+  <div class="field">
+    <%= f.label :end_date, "Konec" %><br />
+     <%= f.text_field :end_date_proper,:disabled => (params[:action]=="edit") ? true : false %>
+  </div>
+  <div class="field">
+    <%= f.label :xls,"Typ xls výkazu" %><br />
+    <%= f.select :xls,[['Denní', 1],['Souhrnný', 2]] %>
+  </div>
+  <div class="field">
+    <%= f.label :belongsto,"Nadřazenost projektu" %><br />
+    <%= f.select :belongsto,[['VUT', 0],['FSI', 1]] %>
+  </div>
+  <div class="actions">
+    <%= f.submit "Uložit" %>
+  </div>
+<% end %>

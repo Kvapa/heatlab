@@ -1,0 +1,34 @@
+<h2>Moje projekty </h2>
+<br />
+
+<% @projects.each_with_index do |project,i| %>
+  <% if i==0 %>
+    <table>
+    <tr>
+      <th>Pořadí</th>
+      <th>Název</th>
+      <th>Začátek</th>
+      <th>Konec</th>
+      <th></th>
+    </tr>
+  <% end %>
+  <tr class="even">
+    <td><%= i+1 %>.</td>
+    <td width = "400"><b><%= project.workname %></b></td>
+  </tr>
+  
+  <% project.jobs.where("user_id=?",@user.id).each do |job| %>
+    <tr class = "odd">
+      <td>
+      </td>
+      <td>
+       <li>Pozice: <%= ProjectPosition.find(job.position).name.gsub(/\(.*?\)/, '') %></li>
+      </td> 
+
+      <td><%= job.start_date.strftime('%d.%m.%Y') %></td>
+      <td><%= job.end_date.strftime('%d.%m.%Y') %></td>  
+      <td><%= link_to "Výkaz práce", my_project_path(project.id) + '/' + job.id.to_s %></td>
+    </tr>
+  <% end %>
+<% end %>
+</table>

@@ -1,0 +1,87 @@
+<%= form_for(@user) do |f| %>
+  <% if @user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+      <ul>
+      <% @user.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :login %><br />
+    <%= f.text_field :login %>
+  </div>
+  <div class="field">
+    <%= f.label :password,"Heslo" %><br />
+    <%= f.password_field :password %>
+  </div>
+  <div class="field">
+    <%= f.label :password_confirmation,"Potvrzení hesla" %><br />
+    <%= f.password_field :password_confirmation %>
+  </div>
+  <div class="field">
+    <%= f.label :email %><br />
+    <%= f.text_field :email %>
+  </div>
+  <div class="field">
+    <%= f.label :firstname, "Jméno" %><br />
+    <%= f.text_field :firstname %>
+  </div>
+  <div class="field">
+    <%= f.label :surname, "Příjmení" %><br />
+    <%= f.text_field :surname %>
+  </div>
+  <div class="field">
+    <%= f.label :fullname,"Celé jméno (i s tituly)" %><br />
+    <%= f.text_field :fullname %>
+  </div>
+  <% if admin? %>
+    <div class="field">
+      <%= f.label :worktype,"Příslušnost" %><br />
+      <%= f.select :worktype,[['Heatlab', 0],['externista', 1]] %>
+    </div>
+    <div class="field">
+      <%= f.label :personal_number,"Osobní číslo" %><br />
+      <%= f.text_field :personal_number %>
+    </div>
+    <div class="field">
+      <%= f.label :admin,"Admin" %><br />
+      <%= f.check_box :admin %>
+    </div>
+  <% end %>
+  
+  <% if admin? %>
+  <hr>
+  <p>
+    <div class="contract">
+      <%= f.label :contract,"Pracovní poměr" %><br />
+      <%= f.select :contract,[['na dobu určitou', 0],['na dobu neurčitou', 1]] %><br />
+    </div>
+    <div class="contract_end">
+      <%= f.label :contract_end,"Platnost pracovního poměru do:" %><br />
+      <%= f.text_field :contract_end_proper %><br />
+    </div>
+    </p>
+    <div class="field">
+      <%= f.label :decree50,"Vyhláška 50 - platnost do:" %><br />
+      <%= f.text_field :decree50_proper %><br />
+    </div>
+     <div class="field">
+      <%= f.label :retire,"Odchod do důchodu" %><br />
+      <%= f.text_field :retire_proper %><br />
+    </div>
+    <div class="field">
+      <%= f.label :birthday,"Narozeniny" %><br />
+      <%= f.text_field :birthday_proper %><br />
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit "Uložit" %>
+  </div>
+
+<% end %>

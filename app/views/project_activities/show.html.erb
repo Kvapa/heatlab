@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Project position:</b>
+  <%= @project_activity.project_position_id %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @project_activity.description %>
+</p>
+
+<p>
+  <b>Position:</b>
+  <%= @project_activity.position %>
+</p>
+
+
+<%= link_to 'Edit', edit_project_activity_path(@project_activity) %> |
+<%= link_to 'Back', project_activities_path %>

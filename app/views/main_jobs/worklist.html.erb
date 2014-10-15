@@ -1,0 +1,90 @@
+<p>
+<h3><%= link_to 'Hlavní docházka', main_worklists_path %> > <%= link_to 'Úvazky', main_worklist_main_jobs_path(@main_worklist) %> > <%= link_to User.find(@main_job.user_id).sur_firstname, main_worklist_main_job_path(@main_worklist,@main_job) %> > <%= date_number_to_string(params[:month].to_i) %> <%= @main_worklist.year.year %> </h3> 
+</p>
+<p>
+  <b>Uživatel:</b>
+  <%= User.find(@main_job.user_id).surname %> <%= User.find(@main_job.user_id).firstname %> <br />
+  <b>Rok:</b>
+  <%= @main_worklist.year.year %><br />
+  <b>Měsíc:</b>
+  <%= params[:month] %>
+</p>
+<table>
+<tr>
+	<td><b>Datum</b></td>
+	<td><b>Den v týdnu</b></td>
+	<td><b>Typ dne</b></td>
+	<td><b>Příchod</b></td>
+	<td><b>Odchod</b></td>
+	<td><b>Počet hodin</b></td>
+	<th>Projekt</th>
+	   <th>Místo</th>
+
+</tr>
+<% user=User.find(@main_job.user_id) %>
+<%= form_tag(:controller => "main_jobs", :action => "worklist_update", :method => "put")%> 
+	<%= fields_for @main_month[0] do |fa| %>
+	 <%=fa.hidden_field :id %>
+	 <div class="field">
+	 	<% if user.worktype == 0 %> 
+	 		<%= fa.label "Počet hodin úvazku týdně" %>
+  			<%= fa.text_field :workload, :maxlength =>2 %>
+  		<% else %>
+  			Počet hodin úvazku týdně: <%= @jobs_workload %>
+  			<% params["exter"] = @jobs_workload.to_s %>
+  		<% end %>
+  	</div>
+  	<div class="field">
+  	 	<%= fa.label :workdays, "Počet pracovních dnů" %>
+  			<%= fa.text_field :workdays, :maxlength =>2, :readonly => true %>
+  	</div>
+  	<div class="field">Pracovní dny: 
+  	 	<%= fa.label :monday, "Pondělí" %>
+  		<%= fa.check_box :monday %>
+  		<%= fa.label :tuesday, "|  Úterý" %>
+  		<%= fa.check_box :tuesday %>
+  		<%= fa.label :wednesday, "|  Středa" %>
+  		<%= fa.check_box :wednesday %>
+  		<%= fa.label :thursday, "|  Čtvrtek" %>
+  		<%= fa.check_box :thursday %>
+  		<%= fa.label :friday, "|  Pátek" %>
+  		<%= fa.check_box :friday %>
+  	</div>
+	<% end %>
+</div>
+	<p>
+	Příchod:<%= time_select("start", "from", {:default => {:hour => '08', :minute => '00'}, :minute_step => 30}) %>
+	Odchod:<%= time_select("end", "until", {:default => {:hour => '16', :minute => '30'}, :minute_step => 30}) %>
+	</p>
+
+	<p>
+	Nastavit všechny pracovní dny na výše uvedené hodnoty? <%=  check_box("confirm", "change_all", {}, 1, 0) %> <br />
+	Nastavit takto i všechny následující měsíce v roce <%= @main_worklist.year.year  %>? <%=  check_box("confirm", "change_months", {}, 1, 0) %>
+</p>
+
+
+	<% for main_jobday in @main_jobdays %>	
+		<%= fields_for "main_jobdays[]",main_jobday do |f| %>
+			<tr class="d<%= main_jobday.day_status %>">
+		  		<td><%= (main_jobday.day).strftime("%d.%m.%Y") %></td>
+		  		<td><%= wday_to_name(main_jobday.day.wday) %></td>
+		  		<td><%= f.select :day_status, [['Pracovní den', 2],['Služební cesta', 5],['Dovolená', 3],['Nemocenská',4],['Nepracovní den', 0], ['Svátek', 1]]%></td>
+		  		<td><%= f.time_select :from,:minute_step => 30,:disabled => ((main_jobday.day.wday == 6 || main_jobday.day.wday == 0 || main_jobday.day_status == 0 || main_jobday.day_status == 1 || main_jobday.day_status == 3  || main_jobday.day_status == 4) ? true : false) %></td>
+		  		<td><%= f.time_select :until,:minute_step => 30,:disabled => ((main_jobday.day.wday == 6 || main_jobday.day.wday == 0 || main_jobday.day_status == 0 || main_jobday.day_status == 1 || main_jobday.day_status == 3  || main_jobday.day_status == 4) ? true : false) %></td>
+		  		<td><%=  main_jobday.hours %></td>
+		  		<% if main_jobday.day_status == 5 %>
+		  		<td><%= f.collection_select( :work_trip, Project.find(:all, :order => "workname ASC"), :id, :workname, :include_blank => "- Vyberte jméno -" )  %></td>
+		  		<td><%= f.text_field :trip_town %></td>
+		  		<% end %> 
+	  	</tr>
+		<% end %>
+	<% end %>
+</table>
+<p>
+	<%= fields_for @main_month[0] do |faa| %>
+	 	Povolit vyplnění výkazu v projektech: <%=faa.hidden_field :id %>
+  	<%=faa.check_box :locked %>
+	<% end %>
+</p>
+<%= submit_tag "Uložit" %>
+<%= link_to 'xls', main_worklist_main_job_path(params[:main_worklist_id].to_i,params[:main_job_id].to_i) + "/worklist/" + params[:month] +"/export_xls"  %>

@@ -1,0 +1,23 @@
+<p>
+  <h3><%= link_to 'Hlavní docházka', main_worklists_path %> > <%= link_to 'Úvazky', main_worklist_main_jobs_path(@main_worklist) %> > <%= link_to User.find(@main_job.user_id).surname, main_worklist_main_job_path(@main_worklist,@main_job) %> </h3>
+</p>
+
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Uživatel:</b>
+  <%= User.find(@main_job.user_id).surname %> <%= User.find(@main_job.user_id).firstname %> <br />
+  <b>Rok:</b>
+  <%= @main_worklist.year.year %>
+</p>
+
+<div>
+	<ul>
+  	<% (1..12).each do |m| %>
+    	<li><%= link_to date_number_to_string(m), main_worklist_main_job_path(@main_worklist,@main_job)+"/worklist/"+m.to_s %></li>
+    <% end %>
+  </ul>
+</div>
+
+<%= link_to 'Edit', edit_main_worklist_main_job_path(@main_worklist) %> |
+<%= link_to 'Back', main_worklist_main_jobs_path %>

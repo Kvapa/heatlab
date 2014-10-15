@@ -1,0 +1,45 @@
+<h1>Přehled akcí</h1>
+<br />
+<%= form_tag events_all_path, :method => 'get' do %>
+  <p>
+    Od: <%= text_field_tag :from, params[:from] %>
+    do: <%= text_field_tag :until, params[:until] %> <br />
+    Projekty: <%= select_tag :projects,options_from_collection_for_select(Project.order("workname ASC"), "id", "workname"),{multiple: true}%> <br />
+    <br />
+    <%= submit_tag "Hledat",:name => nil  %>
+    <%= link_to 'xls', {:controller => :events2, :action => :xls, :from => params[:from], :until => params[:until], :projects => params[:projects]} %>
+  </p>
+<% end %>
+
+
+<br />
+<table>
+  <tr>
+    <th>Od</th>
+    <th>Do</th>
+    <th>Projekt</th>
+    <th>Název</th>
+    <th>Popis</th>
+    <th>Účastníci</th>
+  </tr>
+
+<% @events=@events.where("project_id IN (?)",params[:projects]) if !params[:projects].blank?  %>
+<% @events=@events.where("day >= ?",params[:from]) if !params[:from].blank?  %>
+<% @events=@events.where("day <= ?",params[:until]) if !params[:until].blank?  %>
+
+<% @events.each do |event| %>
+  <tr>
+    <td><%= event.day.strftime('%d.%m.%Y') %></td>
+    <td><%= event.date_until.strftime('%d.%m.%Y') %></td>
+    <td><%= Project.find(event.project_id).workname %></td>
+    <td><%= event.name %></td>
+    <td><%= event.description %></td>
+    
+    <% users="" %>
+    <% event.users.each do |user|  %>
+        <% users += user.sur_firstname + ", " %>
+    <% end %>
+    <td width="300"><%= users[0..-3] %></td>
+  </tr>
+<% end %>
+</table>

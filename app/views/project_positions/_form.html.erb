@@ -1,0 +1,26 @@
+<%= form_for [@project, @project_position] do |f| %>
+  <% if @project_position.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@project_position.errors.count, "error") %> prohibited this project_position from being saved:</h2>
+
+      <ul>
+      <% @project_position.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+   <%= f.hidden_field :project_id, :value => params[:project_id] %>
+  <div class="field">
+    <%= f.label :name, "Název pozice" %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :position_number, "Číslo pozice" %><br />
+    <%= f.text_field :position_number %>
+  </div>
+  <div class="actions">
+    <%= f.submit "Uložit" %>
+  </div>
+<% end %>

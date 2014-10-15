@@ -1,0 +1,72 @@
+<h3><%= link_to 'Projekty', projects_path %> > <%= Project.find(params[:project_id]).workname %> > <%= link_to 'Lidé', project_jobs_path(params[:project_id]) %> >  <%= link_to User.find(@job.user_id).sur_firstname,  project_job_path(@project, @job) %></h3><br />
+
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Uživatel:</b>
+  <%= User.find(@job.user_id).fullname %>
+</p>
+
+<p>
+  <b>Pozice:</b>
+  <%= ProjectPosition.find(@job.position).name %>
+</p>
+
+
+<p>
+  <b>Úvazek (hodin týdně):</b>
+  <%= @job.hours_per_week %>
+</p>
+
+<p>
+<%= link_to 'Editovat úvazek', edit_project_job_path %>
+</p>
+
+<br />
+<div>
+  <% (@job.start_date.year..@job.end_date.year).each do |y| %>
+    <div>
+      <table>
+        <tr>
+          <th>
+            <%= y %>
+          </th>
+          <th>
+            Vyplněno
+          </th>
+          <th>
+            Schváleno
+          </th>
+          <th>
+            Tisk
+          </th>  
+        </tr>
+        <% ((((@job.start_date..@job.end_date).select {|a| a.year == y }).map {|a| a.month}).uniq).each do |m| %>
+        <tr>
+          <td>
+            <%= link_to date_number_to_string(m), project_job_path(@project,@job)+"/worklist/"+y.to_s+"/"+m.to_s %>
+          </td>
+          <% month=Jobmonth.where("job_id=? and month=?",params[:id], Date.new(y,m).beginning_of_month)[0] %> 
+          <td>
+            <% if month.filled %>
+              <center><%= image_tag "check.png" %></center>
+            <% else %>
+             <center> <%= image_tag "delete.png" %></center>
+            <% end %> 
+          </td>
+          <td>
+            <% if month.checked %>
+              <center><%= image_tag "check.png" %></center>
+            <% else %>
+             <center> <%= image_tag "delete.png" %></center>
+            <% end %>
+          </td>
+          <td>
+           <%= link_to 'xls', project_job_path(@project,@job)+"/worklist/"+y.to_s+"/"+m.to_s+"/export_xls" %>
+           </td>  
+        <% end %>
+      </table>
+    </div>
+    <br />
+  <% end %>
+</div>

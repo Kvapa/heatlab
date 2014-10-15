@@ -1,0 +1,49 @@
+<%= form_for [@project,@event] do |f| %>
+  <% if @event.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@event.errors.count, "error") %> prohibited this event from being saved:</h2>
+
+      <ul>
+      <% @event.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+   <%= f.hidden_field :project_id, :value => params[:project_id] %>
+   <div class="field">
+    <%= f.label :name, "Název akce" %><br />
+    <%= f.text_field :name %>
+  </div>
+
+
+  <div class="field">
+    <%= f.label :description, "Popis akce" %><br />
+    <%= f.text_field :description, :maxlength => 140 %>
+  </div>
+
+  <div class="field">
+    <%= f.label :day, "Datum od" %><br />
+    <%= f.text_field :day_proper %>
+  </div>
+
+  <div class="field">
+    <%= f.label :date_until, "Datum do" %><br />
+    <%= f.text_field :date_until_proper %>
+  </div>
+
+  <div class="field">
+    <%= f.label :user_ids, "Účastníci" %><br />
+    <%= f.collection_select(:user_ids, User.order(:surname), :id, :sur_firstname ,{},{multiple: true})   %>
+  </div>
+
+  <div class="field">
+    <%= f.label :eventgroup, "Skupina účastníků" %><br />
+      <%= f.collection_select(:eventgroup, @project.eventgroups, :id, :name ,options ={:prompt => "---"})   %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
+

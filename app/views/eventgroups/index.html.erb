@@ -1,0 +1,21 @@
+<h3><%= link_to 'Projekty', projects_path %> > <%= Project.find(params[:project_id]).workname %> > <%= link_to 'Akce', project_events_path(@project) %> > <%= link_to 'Přehled skupin', project_eventgroups_path(@project) %>  </b></h3>
+
+<table>
+  <tr>
+    <th>Název skupiny</th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @eventgroups.each do |eventgroup| %>
+  <tr>
+    <td><%= eventgroup.name %></td>
+    <td><%= link_to 'Změnit', edit_project_eventgroup_path(@project,eventgroup) %></td>
+    <td><%= link_to 'Smazat', project_eventgroup_path(@project,eventgroup), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'Vytvořit novou skupinu', new_project_eventgroup_path %>

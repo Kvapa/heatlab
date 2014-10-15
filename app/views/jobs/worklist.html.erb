@@ -1,0 +1,177 @@
+<h3><%= link_to 'Projekty', projects_path %> > <%= Project.find(params[:project_id]).workname %> > <%= link_to 'Lidé', project_jobs_path(params[:project_id]) %> > <%= link_to @user.sur_firstname,  project_job_path(@project,@job) %> > <%= date_number_to_string(params[:month].to_i) %> <%= params[:year] %> </h3>
+<p>
+Projekt: <b><%= @project.workname %></b> <br />
+Jméno: <b><%= @user.surname + " " + @user.firstname  %></b> <br />
+Období: <b><%= params[:month] + "/" + params[:year] %> </b> <br />
+Pozice: <b><%= ProjectPosition.find(@job.position).name %></b> <br />
+
+<% if @job.usertype == 0 && @job.joined %>
+	Úvazek v tomto projektu: <b><%= @month[0].workload  %> hodin/týden </b> <br />
+	Úvazek v heatlab: <b><%= jobs_rest_workload(params[:job_id],params[:year].to_i,params[:month].to_i)[0]  %> hodin/týdně</b> <br />
+	Další úvazky v projektech: <b><%= jobs_rest_workload(params[:job_id],params[:year].to_i,params[:month].to_i)[1]-@month[0].workload  %> hodin/týdně</b><br />
+	Vedlejší úvazek: <b><%= jobs_rest_workload(params[:job_id],params[:year].to_i,params[:month].to_i)[0] - jobs_rest_workload(params[:job_id],params[:year].to_i,params[:month].to_i)[1] %> hodin/týdně</b>
+<% elsif @job.joined == false  %>
+Úvazek v tomto projektu: <b><%= @month[0].workload  %> hodin/týden </b> <br />
+<% else %>
+	Úvazek v tomto projektu: <b><%= @month[0].workload  %> hodin/měsíc </b> <br />	
+<% end %>
+</p>
+<hr>
+
+<% if !@main_job.blank? && @main_jobmonth[0].locked == false &&  @job.joined == true  %>
+
+Hlavní docházka neexistuje nebo není zamknutá
+
+<% else %>
+<% if !@main_job.blank? && @job.joined == true   %>
+<% @month[0].monday = @main_jobmonth[0].monday %>
+<% @month[0].tuesday = @main_jobmonth[0].tuesday %>
+<%  @month[0].wednesday = @main_jobmonth[0].wednesday %>
+<%  @month[0].thursday = @main_jobmonth[0].thursday %>
+<%  @month[0].friday = @main_jobmonth[0].friday %>
+<%  @month[0].workdays = @main_jobmonth[0].workdays %>
+<% end %>
+	<table>
+		<tr>
+	    <th>Datum</th>
+	    <th>Den v týdnu</th>
+	    <th>Typ dne</th>
+	    <% if @project.xls == 1 %>
+	    	<th>Popis práce</th>
+	    <% elsif @project.xls == 2 %>
+	    	<th>Název pracovní činnosti</th>
+	    	<th>Popis vykonaných aktivit</th>
+	    <% end %>
+	    <th>Počet hodin</th>
+	  </tr>
+
+		<%= form_tag(:controller => "jobs", :action => "worklist_update", :method => "put")%> 
+		<%= fields_for @month[0] do |fa| %>
+		<%=fa.hidden_field :id %>
+	 	<div class="field">
+	 		<% if @job.usertype == 0 %>
+	 			<%= fa.label "Počet hodin úvazku týdně" %>
+	 		<% else %>
+	 			<%= fa.label "Počet hodin úvazku měsíčně" %>
+	 		<% end %>
+  			<%= fa.text_field :workload, :maxlength =>2 %>
+  		</div>
+  	 	<div class="field">
+  	 		<%= fa.label :workdays, "Počet pracovních dnů" %>
+  			<%= fa.text_field :workdays, :maxlength =>2,:readonly =>true %>
+  		</div>
+  		<div class="field">Pracovní dny: 
+  	 	<%= fa.label :monday, "Pondělí" %>
+  		<%= fa.check_box :monday %>
+  		<%= fa.label :tuesday, "|  Úterý" %>
+  		<%= fa.check_box :tuesday %>
+  		<%= fa.label :wednesday, "|  Středa" %>
+  		<%= fa.check_box :wednesday %>
+  		<%= fa.label :thursday, "|  Čtvrtek" %>
+  		<%= fa.check_box :thursday %>
+  		<%= fa.label :friday, "|  Pátek" %>
+  		<%= fa.check_box :friday %>
+  	</div>
+		<% end %>
+		<p>
+		Změnit pracovní dny podle výše uvedeného?<%=  check_box("confirm", "change_all", {}, 1, 0) %>
+	</p>
+	<p>
+		Nastavit takto i všechny následující měsíce v projektu? <%=  check_box("confirm", "change_months", {}, 1, 0) %>
+	</p>
+	<hr>
+	<p>Součet: <b><%= @sum_hours.round(2) %> hodin/měsíc</b> <br /></p>
+
+	<% events_ids=Array.new %>
+	
+			<% for jobday in @jobdays %>
+
+				<%= fields_for "jobdays[]",jobday do |f| %>
+					<% if !@main_job.blank? %>
+					  	<% 	test1=MainJobday.where("main_job_id=? AND day=?",@main_job[0].id,jobday.day)[0]
+					  		test2='';
+					  		if @job.joined
+					  			if test1.day_status == 5 && !(test1.work_trip == params[:project_id].to_i)
+					  				jobday.day_status=2
+					  				jobday.save
+					  			else
+					  				jobday.day_status=test1.day_status
+					  				jobday.save
+					  			end
+					  		end
+					  		if test1.work_trip == nil 
+					  			test1.work_trip = 0
+					  		end
+					  		if test1.work_trip == params[:project_id].to_i
+				  				test2=test1.trip_town
+				  			elsif test1.work_trip > 0
+				  				test2 =  Project.find(test1.work_trip).workname
+				  			end
+					  	%>
+					  	<% else
+				  		test1=MainJobday.new 
+				  		test1.work_trip = 0
+				  		%>
+					 <% end %>
+				  	<tr class="d<%= jobday.day_status %>">
+				  		<td><%= (jobday.day).strftime("%d.%m.%Y") %></td>
+				  		<td><%= wday_to_name((jobday.day).wday) %></td>
+				  		<% status=['Nepracovní den','Svátek','Pracovní den','Dovolená','Nemoc','Služební cesta']%>
+				  		<% if @job.joined && @job.usertype == 0  %>
+							<td><%= status[jobday.day_status] %></td>
+						<% else %>
+				  			<td><%= f.select :day_status, [['Pracovní den', 2],['Služební cesta', 5],['Nepracovní den', 0],['Dovolená', 3],['Nemocenská',4],['Svátek', 1]], :disabled => ((jobday.day.wday == 6 || jobday.day.wday == 0 || jobday.day_status == 1 ) ? true : false) %></td>
+				  		<% end %>
+				  		<% if jobday.day_status ==3
+							jobday.description=''
+							jobday.save
+						end %>
+				  		<% if @project.xls == 1 %>
+
+				  			<td><%= f.text_field :description, :maxlength =>110, :class =>:autocomplete, data: {autocomplete_source: project_job_worklist_autocomplete_path(params[:project_id],params[:job_id]) },:disabled => ((jobday.day_status == 1 || jobday.day_status == 0 || jobday.day_status == 3  ) ? true : false) %></td>
+				  		<% elsif @project.xls == 2 %>
+				  			<td><%= f.text_field :name_wa, :maxlength =>55, :disabled => ((jobday.day.wday == 6 || jobday.day.wday == 0 || jobday.day_status == 1 || jobday.day_status == 0  ) ? true : false) %></td>
+				  			<td><%= f.text_field :description_wa, :maxlength =>55, :disabled => ((jobday.day.wday == 6 || jobday.day.wday == 0 || jobday.day_status == 1 || jobday.day_status == 0  ) ? true : false) %></td>
+				  		<% end %>
+				  			
+				  			<td><%= f.text_field :hours,:maxlength => 4,:disabled => ((jobday.day.wday == 6 || jobday.day.wday == 0 || jobday.day_status == 1 || jobday.day_status == 0 ) ? true : false) %></td>
+				  			<% if test1.work_trip > 0 %>
+					  			<td><a href="#" onmouseover="pop_up('travel_<%= jobday.id%>')" onmouseout="pop_down('travel_<%= jobday.id%>')">Cesta</a>
+					  				<div id="event_travel_<%= jobday.id%>" style="display:none" title="Pracovní cesta">
+												<b>Projekt:</b> <%= Project.find(test1.work_trip).workname %><br />
+												<b>Místo:</b> <%= test1.trip_town %><br />
+											</div>
+					  			</td>
+				  			<% end %>
+				  		<% @events.where("day <= ? AND date_until >= ?",jobday.day,jobday.day).each do |event| %>
+							<% if !event.users.where("user_id = ?",@user.id).blank?%>
+								<td><a href="#" onmouseover='pop_up(<%= event.id %>)' onmouseout='pop_down(<%= event.id %>)'>Akce</a>
+									<% if !events_ids.include?(event.id) %> 
+										<div id="event_<%= event.id %>" style="display:none" title="Informace o akci">
+											<b>Název:</b> <%= event.name %><br />
+											<b>Popis:</b> <%= event.description %><br />
+											<b>Projekt:</b> <%= Project.find(event.project_id).workname %><br />
+											<b>Od:</b> <%= event.day.strftime('%d.%m.%Y') %><br />
+											<b>Do:</b> <%= event.date_until.strftime('%d.%m.%Y') %><br />
+										</div>
+									<% end %>
+									<% events_ids = events_ids.push(event.id).uniq %>
+								</td>
+							<% end %>	 
+						<% end %>		
+			  		</tr>
+				<% end %>
+			<% end %>
+			</table>
+			<p><%= fields_for @month[0] do |faa| %>
+	 		Výkaz vyplněn: <%=faa.hidden_field :id %>
+  			<%=faa.check_box :filled %> <br />
+  			Výkaz schválen k tisku: <%=faa.check_box :checked %>
+			<% end %>
+			</p>
+			<br />
+			<%= submit_tag "Uložit" %>
+<% end %> 
+<%= link_to 'xls', '/projects/'+params[:project_id]+'/jobs/'+params[:job_id]+'/worklist/'+params[:year]+'/'+params[:month]+'/export_xls' %>
+
+

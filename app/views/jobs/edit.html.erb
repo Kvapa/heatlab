@@ -1,0 +1,6 @@
+<h3><%= link_to 'Projekty', projects_path %> > <%= Project.find(params[:project_id]).workname %> > <%= link_to 'Lidé', project_jobs_path(params[:project_id]) %> > Úprava úvazku</h3>
+
+<%= render 'form' %>
+
+<%= link_to 'Show', project_job_path %> |
+<%= link_to 'Back', project_jobs_path %>

@@ -1,0 +1,46 @@
+<p>
+  <h3><%= link_to 'Hlavní docházka', main_worklists_path %> > <%= link_to 'Úvazky', main_worklist_main_jobs_path(@main_worklist) %> </h3><br />
+</p>
+<p><%= link_to 'Nový hlavní úvazek', new_main_worklist_main_job_path %></p>
+<p>
+  <h3>Zaměstnanci Heatlab </h3>
+  <table>
+  <tr>
+    <th>Uživatel</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+  <% @main_jobs.each do |main_job| %>
+  <tr>
+    <td><%= User.find(main_job.user_id).surname %> <%= User.find(main_job.user_id).firstname %> </td>
+    <td><%= link_to 'Docházka', main_worklist_main_job_path(@main_worklist,main_job) %></td>
+    <td><%= link_to 'Úvazky', main_worklist_main_job_jobcheck_path(@main_worklist,main_job) %></td>
+    <td><%= link_to 'Smazat', main_worklist_main_job_path(@main_worklist,main_job), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+  <% end %>
+  </table>
+</p>
+<p>
+  <h3>Externisti</h3>
+  <table>
+  <tr>
+    <th>Uživatel</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+  <% @main_jobs_exter.each do |main_job| %>
+  <tr>
+    <td><%= User.find(main_job.user_id).surname %> <%= User.find(main_job.user_id).firstname %> </td>
+    <td><%= link_to 'Docházka', main_worklist_main_job_path(@main_worklist,main_job) %></td>
+    <td><%= link_to 'Úvazky', main_worklist_main_job_jobcheck_path(@main_worklist,main_job) %></td>
+    <td><%= link_to 'Smazat', main_worklist_main_job_path(@main_worklist,main_job), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+  <% end %>
+  </table>
+</p>
+
+

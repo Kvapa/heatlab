@@ -1,0 +1,5 @@
+<h3><%= link_to 'Projekty', projects_path %> > <%= Project.find(params[:project_id]).workname %> > Přehled úvazků </b></h3>
+
+<% (@project.start_date.year..@project.end_date.year).each do |y| %>
+	<%= link_to  y, project_jobcheck_path(@project) + "/" + y.to_s %> <br />
+<% end %>

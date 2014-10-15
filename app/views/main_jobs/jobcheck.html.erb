@@ -1,0 +1,75 @@
+  <p>
+  Jméno: <b><%= @user.surname + " " + @user.firstname %></b><br />
+  Rok: <%= @main_worklist.year.year %>
+</p>
+<%= form_tag(:controller => "main_jobs", :action => "jobcheck_update", :method => "put")%> 
+<table border="1">
+  <tr>
+    <th></th>
+    <th>Leden</th>
+    <th>Únor</th>
+    <th>Březen</th>
+    <th>Duben</th>
+    <th>Květen</th>
+    <th>Červen</th>
+    <th>Červenec</th>
+    <th>Srpen</th>
+    <th>Září</th>
+    <th>Říjen</th>
+    <th>Listopad</th>
+    <th>Prosinec</th>
+    <th>Hodin týdně</th>
+  </tr>
+<tr>
+  <% result = Array.new(2) { Array.new(12,0) }%>
+  
+	<td><b>VUT</b></td>
+	<% (1..12).each do |n| %>
+	  <% month=MainJobmonth.where("main_job_id=? and month=?",params[:main_job_id],Date.new(@main_worklist.year.year,n).beginning_of_month) %>
+	  <td><center> <%= month[0].workload if month[0] %><br /><%=  check_box("heatlab", n, {}, 1, 0) if month[0] %></center></td>
+    <% if month[0] 
+        result[0][n-1] = month[0].workload
+      else
+       result[0][n-1] = 0
+      end 
+      %>
+	<% end %><td><%=  text_field("heatlab","hours",:maxlength => 3) %></td>
+  </tr><td colspan="14"><hr></td></tr>
+<% @projects.each do |p| %>
+  <tr>
+    <% job=Job.where("usertype = 0 and project_id=? and user_id=?",p.id,@user.id) %>
+    <% if !job.blank? %>
+       <td> <%= p.workname %> </td>
+      <% (1..12).each do |n| %>
+        <% month=Jobmonth.where("job_id=? and month=?",job[0].id, Date.new(@main_worklist.year.year,n).beginning_of_month) %>
+        <% if month[0] 
+          if result[1][n-1]
+            result[1][n-1] += month[0].workload
+          else
+            result[1][n-1] = month[0].workload
+          end
+        end 
+        %>
+        <td><center><%= month[0].workload if month[0] %><br /><%=  check_box(p.id, n, {}, 1, 0) if month[0] %> </center> </td>
+      <% end %><td><%=  text_field(p.id,"hours",:maxlength => 3) %></td>
+    <% end %>
+  </tr>
+<% end %>
+<tr>
+  <td></td>
+  <% (0..11).each do |n| %>
+    <td><center><b>
+    <% if result[0][n] == result[1][n] %>
+      <font color="green">
+    <% else %>
+      <font color="red">
+    <% end %>
+
+     <%= result[0][n] %> / <%= result[1][n] %>
+   </font>
+    </b></center></td>
+  <% end %>
+</tr>
+</table>
+<br />
+<%= submit_tag "Uložit" %>

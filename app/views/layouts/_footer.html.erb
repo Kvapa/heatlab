@@ -1,0 +1,8 @@
+<footer class="footer">
+  <small>
+    <% if !current_user && !current_page?(:controller => 'sessions', :action => 'new')  %>
+    	Nejste přihlášen/a. Přihlásit se můžete <%= link_to "zde", "/login" %>.
+    <% end %>
+  </small>
+ 
+</footer>

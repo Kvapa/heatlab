@@ -1,0 +1,62 @@
+<%= form_for [@project,@job] do |f| %>
+  <% if @job.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@job.errors.count, "error") %> prohibited this job from being saved:</h2>
+
+      <ul>
+      <% @job.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= f.hidden_field :project_id, :value => params[:project_id] %>
+  <div class="field">
+    <%= f.label :user_id, "Uživatel" %>
+    <%= collection_select(:job,:user_id, User.find(:all, :order => :surname), :id, :sur_firstname, options ={:prompt => "---"},:disabled => (params[:action]=="edit") ? true : false) %>
+  </div>
+  <div class="field">
+    <%= f.label :position, "Pozice v projektu" %>
+    <%= collection_select(:job,:position, @project.project_positions.order('position'), :id, :name, options ={:prompt => "---"}) %>
+  </div>
+  <div class="field">
+    <%= f.label :start_date, "Začátek úvazku" %><br />
+    <%= f.text_field :start_date_proper %>
+  </div>
+
+  <div class="field">
+    <%= f.label :end_date, "Konec úvazku" %><br />
+    <%= f.text_field :end_date_proper %>
+  </div>
+  
+  <div class="usertype">
+      <%= f.label :usertype,"Typ pracovního poměru" %><br />
+      <%= f.select :usertype,[['Zaměstnanec', 0],['DPP', 1]] %>
+  </div>
+
+  <div class="dpp">
+      Pracovní dny:  
+      Pondělí <%=  check_box("dpp", "monday", {}, 1, 0) %> |
+      Úterý <%=  check_box("dpp", "tuesday", {}, 1, 0) %> |
+      Středa <%=  check_box("dpp", "wednesday", {}, 1, 0) %> |
+      Čtvrtek <%=  check_box("dpp", "thursday", {}, 1, 0) %> |
+      Pátek <%=  check_box("dpp", "friday", {}, 1, 0) %> 
+      
+  </div>
+
+  <% if params[:action] == "new" %>
+    <div class="field">
+      <%= f.label :hours_per_week, "Úvazek (hodiny týdně nebo měsíčně)" %>
+      <%= f.text_field :hours_per_week, :maxlength =>4 %>
+    </div>
+  <% end %>
+  <div class="join">
+    <%= f.label :joined, "Propojit s heatlab docházkou" %>
+    <%= f.check_box :joined %>
+  </div>
+  <div class="actions">
+    <%= f.submit "Uložit" %>
+  </div>
+<% end %>
+<p class="listprice"></p>

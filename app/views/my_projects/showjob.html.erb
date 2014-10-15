@@ -1,0 +1,47 @@
+<p>
+  Jméno: <b><%= @user.surname + " " + @user.firstname  %></b> <br />
+  Projekt: <b><%= @project.name %></b> <br />
+  Pozice: <b><%= ProjectPosition.find(@job.position).name.gsub(/\(.*?\)/, '') %></b> <br />  
+</p>
+
+<div>
+  <% (@job.start_date.year..@job.end_date.year).each do |y| %>
+    <div>
+      <table>
+        <tr>
+          <th>
+            <%= y %>
+          </th>
+          <th>
+            Vyplněno
+          </th>
+          <th>
+            Schváleno
+          </th>
+        </tr>
+        <% ((((@job.start_date..@job.end_date).select {|a| a.year == y }).map {|a| a.month}).uniq).each do |m| %>
+        <tr>
+          <td>
+            <%= link_to date_number_to_string(m), "/my_projects/"+ params[:id] + "/" + params[:job_id] + "/worklist/" + y.to_s + "/" + m.to_s %>
+          </td>
+          <% month=Jobmonth.where("job_id=? and month=?",@job.id, Date.new(y,m).beginning_of_month)[0] %> 
+          <td>
+            <% if month.filled %>
+              <center><%= image_tag "check.png" %></center>
+            <% else %>
+             <center> <%= image_tag "delete.png" %></center>
+            <% end %> 
+          </td>
+          <td>
+            <% if month.checked %>
+              <center><%= image_tag "check.png" %></center>
+            <% else %>
+             <center> <%= image_tag "delete.png" %></center>
+            <% end %> 
+          </td>
+        <% end %>
+      </table>
+    </div>
+    <br />
+  <% end %>
+</div>

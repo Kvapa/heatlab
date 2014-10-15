@@ -1,0 +1,21 @@
+<%= form_for [@project, @project_position, @project_activity] do |f| %>
+  <% if @project_activity.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@project_activity.errors.count, "error") %> prohibited this project_activity from being saved:</h2>
+
+      <ul>
+      <% @project_activity.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+ <%= f.hidden_field :project_position_id, :value => params[:project_position_id] %>
+  <div class="field">
+    <%= f.label :description, 'Popis činnosti' %><br />
+    <%= f.text_field :description, :maxlength => 110 %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

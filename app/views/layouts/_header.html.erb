@@ -1,0 +1,21 @@
+<div id='navigation'>
+  <ul class="right">
+    <% if current_user %>
+       <li><%= link_to "Odhlásit", logout_path %></li>
+       <li><%= link_to "Můj účet (" + current_user.firstname + " " + current_user.surname + ")", edit_user_path(current_user) %></li>
+       <li><%= link_to "Moje projekty", my_projects_path %></li>
+       <li><%= link_to "Akce", events_all_path %></li>
+    <% else %>
+      <li><%= link_to content_tag(:b,"Přihlásit"), login_path %></li>
+    <% end %>
+  </ul>
+  <ul class="left">
+    <% if current_user %>
+      <% if admin? %> 
+        <li><%= link_to "Uživatelé", users_path %></li> 
+        <li><%= link_to "Hlavní docházka", main_worklists_path %></li>
+        <li><%= link_to "Projekty", projects_path %></li>
+      <% end %>
+    <% end %>  
+  </ul>
+</div>

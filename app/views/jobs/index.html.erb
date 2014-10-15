@@ -1,0 +1,69 @@
+<h3><%= link_to 'Projekty', projects_path %> > <%= Project.find(params[:project_id]).workname %> > <b><%= link_to 'Lidé', project_jobs_path(params[:project_id]) %></b></h3>
+
+<br />
+<%= link_to 'Nový úvazek', new_project_job_path %>
+<p>
+  <h3>Zaměstnanci </h3>
+  <table>
+  <tr>
+    <th>Uživatel</th>
+    <th>Pozice</th>
+    <th>Příslušnost</th>
+    <th>Úvazek pro tento měsíc <br /> (počet hodin týdně)</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+<% contract = ["Heatlab","externista"] %>
+<% @jobs.each do |job| %>
+  <tr>
+    <td><%= User.find(job.user_id).surname %> <%= User.find(job.user_id).firstname%>  </td>
+    <td><%= ProjectPosition.find(job.position).name %></td>
+    <td><%= contract[User.find(job.user_id).worktype] %></td>
+    <% month=Jobmonth.all(
+      :conditions => {
+      :job_id =>job.id, 
+      :month => DateTime.now.to_date.beginning_of_month
+    })[0] %>
+   
+    <td><center><%= month.workload if !month.nil? %> (<%= (month.workload / 0.4) if !month.nil? %> <% if month.nil? %> žádný <% else %> % <%end%>)<center></td>
+    <td><%= link_to 'Výkaz práce', project_job_path(@project,job) %></td>
+    <td><%= link_to 'Změnit úvazek', edit_project_job_path(@project,job) %></td>
+    <td><%= link_to 'Smazat', project_job_path(@project,job), method: :delete, data: { confirm: 'Opravdu chcete smazat úvazek?' } %></td>
+  </tr>
+<% end %>
+</table>
+</p>
+
+<p>
+  <h3>Dohoda o provedení práce</h3>
+  <table>
+  <tr>
+    <th>Uživatel</th>
+    <th>Pozice</th>
+    <th>Příslušnost</th>
+    <th>Úvazek pro tento měsíc <br /> (počet hodin měsíčně)</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @jobsDPP.each do |job| %>
+  <tr>
+    <td><%= User.find(job.user_id).surname %> <%= User.find(job.user_id).firstname %>  </td>
+    <td><%= ProjectPosition.find(job.position).name %></td>
+    <td><%= contract[User.find(job.user_id).worktype] %></td>
+      <% month=Jobmonth.all(
+      :conditions => {
+      :job_id =>job.id, 
+      :month => DateTime.now.to_date.beginning_of_month
+    })[0] %>
+    <td><%= month.workload if !month.nil? %></td>
+    <td><%= link_to 'Výkaz práce', project_job_path(@project,job) %></td>
+    <td><%= link_to 'Změnit úvazek', edit_project_job_path(@project,job) %></td>
+    <td><%= link_to 'Smazat', project_job_path(@project,job), method: :delete, data: { confirm: 'Opravdu chcete smazat úvazek?' } %></td>
+  </tr>
+<% end %>
+</table>
+</p>
+

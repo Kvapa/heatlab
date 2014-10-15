@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @eventgroup.name %>
+</p>
+
+<p>
+  <b>Project:</b>
+  <%= @eventgroup.project_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_eventgroup_path(@eventgroup) %> |
+<%= link_to 'Back', project_eventgroups_path %>
