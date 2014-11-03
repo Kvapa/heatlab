@@ -36,7 +36,7 @@ Hlavní docházka neexistuje nebo není zamknutá
 	    <th>Datum</th>
 	    <th>Den v týdnu</th>
 	    <th>Typ dne</th>
-	    <% if @project.xls == 1 %>
+	    <% if @project.xls == 1 || 3 %>
 	    	<th>Popis práce</th>
 	    <% elsif @project.xls == 2 %>
 	    	<th>Název pracovní činnosti</th>
@@ -126,7 +126,7 @@ Hlavní docházka neexistuje nebo není zamknutá
 							jobday.description=''
 							jobday.save
 						end %>
-				  		<% if @project.xls == 1 %>
+				  		<% if @project.xls == 1 || 3 %>
 
 				  			<td><%= f.text_field :description, :maxlength =>110, :class =>:autocomplete, data: {autocomplete_source: project_job_worklist_autocomplete_path(params[:project_id],params[:job_id]) },:disabled => ((jobday.day_status == 1 || jobday.day_status == 0 || jobday.day_status == 3  ) ? true : false) %></td>
 				  		<% elsif @project.xls == 2 %>
