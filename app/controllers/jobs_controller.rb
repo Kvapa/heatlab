@@ -722,36 +722,67 @@ class JobsController < ApplicationController
         elsif jobday.day_status == 1
           pub_day += 8 * @jobmonth[0].workload.to_f / 40 * 5 / @jobmonth[0].workdays.to_f  
         end 
-      end  
+      end 
+
+      sum_pub = 0
+      sum_pubday = 0
+      sum_work = 0
+      sum_workday = 0
+      sum_sick = 0
+      sum_sickday = 0
+      sum_holi = 0
+      sum_holiday = 0
+
+      @jobdays.each do |day|
+        if day.day_status == 1
+          sum_pub += day.hours
+          sum_pubday += 1
+        end
+
+        if day.day_status == 2
+          sum_work += day.hours
+          sum_workday += 1
+        end
+
+        if day.day_status == 3
+          sum_holi += day.hours
+          sum_holiday += 1
+        end
+
+        if day.day_status == 4
+          sum_sick += day.hours
+          sum_sickday += 1
+        end 
+      end 
+
       t=""
       res=Hash[days.group_by {|x| x}.map {|k,v| [k,v.count]}]
       res=res.sort_by {|k,v| v}.reverse
 
-        hours_sum = 0
-        res.each_with_index do |x,i|
-        hours_sum += x[1] * @jobmonth[0].workload.to_f / @jobmonth[0].workdays.to_f
+      hours_sum = 0
+      res.each_with_index do |x,i|
         t=t+x[0]+"\n"
+      end
  
-        sheet[9, 0] = t
+      sheet[9, 0] = t
 
-        sheet[10, 4] = hours_sum + pub_day
+      sheet[10, 4] =  sum_pub + sum_work 
 
-        sheet[14, 4] = holiday_count
-        sheet[15, 4] = holiday_hours
+      sheet[14, 4] = sum_holiday
+      sheet[15, 4] = sum_holi
 
-        sheet[18, 4] = sick_count
-        sheet[19, 4] = sick_hours
+      sheet[18, 4] = sum_sickday
+      sheet[19, 4] = sum_sick
 
-        sheet[24, 4] = @jobmonth[0].month.end_of_month.strftime("%d.%m.%Y")
-        sheet[29, 4] = @jobmonth[0].month.end_of_month.strftime("%d.%m.%Y")
+      sheet[24, 4] = @jobmonth[0].month.end_of_month.strftime("%d.%m.%Y")
+      sheet[29, 4] = @jobmonth[0].month.end_of_month.strftime("%d.%m.%Y")
 
-        if @job.user_id == 12
-          sheet[30, 4] = "Miroslav Raudenský"
-          sheet[31, 4] = "vědecký pracovník"
-        else 
-          sheet[30, 4] = "Jaroslav Horský"
-          sheet[31, 4] = "řešitel"  
-        end
+      if @job.user_id == 12
+        sheet[30, 4] = "Miroslav Raudenský"
+        sheet[31, 4] = "vědecký pracovník"
+      else 
+        sheet[30, 4] = "Jaroslav Horský"
+        sheet[31, 4] = "řešitel"  
       end
 
       
