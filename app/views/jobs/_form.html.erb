@@ -45,10 +45,10 @@
       
   </div>
 
-  <% if params[:action] == "new" %>
+  <% if params[:action] == "new" || "create" %>
     <div class="field">
       <%= f.label :hours_per_week, "Úvazek (hodiny týdně nebo měsíčně)" %>
-      <%= f.text_field :hours_per_week, :maxlength =>4 %>
+      <%= f.text_field :hours_per_week, :maxlength =>4, :value => 0 %>
     </div>
   <% end %>
   <div class="join">

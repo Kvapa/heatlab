@@ -26,7 +26,7 @@
       :month => DateTime.now.to_date.beginning_of_month
     })[0] %>
    
-    <td><center><%= month.workload if !month.nil? %> (<%= (month.workload / 0.4) if !month.nil? %> <% if month.nil? %> žádný <% else %> % <%end%>)<center></td>
+    <td><center><%= month.workload if !month.nil? %> ( <% if month.nil? %> žádný <% else %> % <%end%>)<center></td>
     <td><%= link_to 'Výkaz práce', project_job_path(@project,job) %></td>
     <td><%= link_to 'Změnit úvazek', edit_project_job_path(@project,job) %></td>
     <td><%= link_to 'Smazat', project_job_path(@project,job), method: :delete, data: { confirm: 'Opravdu chcete smazat úvazek?' } %></td>

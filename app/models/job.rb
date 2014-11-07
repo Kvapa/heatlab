@@ -3,6 +3,7 @@ class Job < ActiveRecord::Base
   attr_accessor :dpp_days, :projectid
   validates :position, :numericality => { :only_integer => true }
   validates :user_id, :numericality => { :only_integer => true }
+  validates :hours_per_week, :numericality => { :greater_than_or_equal_to => 0 }
   after_create :create_workdays
 
   belongs_to :user

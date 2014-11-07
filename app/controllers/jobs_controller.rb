@@ -52,6 +52,7 @@ class JobsController < ApplicationController
   # POST /jobs
   # POST /jobs.json
   def create
+    @project = Project.find(params[:project_id])
     @job = Job.new(params[:job])
 
     @job.dpp_days = Array.new(7)
@@ -77,6 +78,7 @@ class JobsController < ApplicationController
   # PUT /jobs/1
   # PUT /jobs/1.json
   def update
+    @project = Project.find(params[:project_id])
     @job = Job.find(params[:id])
 
     respond_to do |format|

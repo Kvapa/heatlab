@@ -17,6 +17,7 @@ class ProjectPositionsController < ApplicationController
   # GET /project_positions/1
   # GET /project_positions/1.json
   def show
+    @project = Project.find(params[:project_id])
     @project_position = ProjectPosition.find(params[:id])
 
     respond_to do |format|
@@ -46,6 +47,7 @@ class ProjectPositionsController < ApplicationController
   # POST /project_positions
   # POST /project_positions.json
   def create
+    @project = Project.find(params[:project_id])
     @project_position = ProjectPosition.new(params[:project_position])
 
     respond_to do |format|
@@ -62,6 +64,7 @@ class ProjectPositionsController < ApplicationController
   # PUT /project_positions/1
   # PUT /project_positions/1.json
   def update
+    @project = Project.find(params[:project_id])
     @project_position = ProjectPosition.find(params[:id])
 
     respond_to do |format|
