@@ -106,8 +106,19 @@ class UsersController < ApplicationController
   end
 
   def self.birthdays
-    @users1=User.find_by_sql(["SELECT * FROM users WHERE (EXTRACT(DOY FROM birthday) >= EXTRACT(DOY FROM DATE(?))) AND (EXTRACT(DOY FROM birthday) <= EXTRACT(DOY FROM DATE(?))) ORDER BY EXTRACT(DOY FROM birthday)",Time.now+3.day,Time.now+10.day])
-    @users2=User.find_by_sql(["SELECT * FROM users WHERE (EXTRACT(DOY FROM birthday) >= EXTRACT(DOY FROM DATE(?))) AND (EXTRACT(DOY FROM birthday) <= EXTRACT(DOY FROM DATE(?))) ORDER BY EXTRACT(DOY FROM birthday)",Time.now+11.day,Time.now+3.day+1.month])
+   # ruby script/rails runner 'UsersController.birthdays'
+
+   if (Time.now+10.day).year - (Time.now+3.day).year > 0
+      @users1=User.find_by_sql(["SELECT * FROM users WHERE (EXTRACT(DOY FROM birthday) >= EXTRACT(DOY FROM DATE(?))) OR (EXTRACT(DOY FROM birthday) <= EXTRACT(DOY FROM DATE(?))) ORDER BY EXTRACT(DOY FROM birthday)",Time.now+3.day,Time.now+10.day])
+    else
+      @users1=User.find_by_sql(["SELECT * FROM users WHERE (EXTRACT(DOY FROM birthday) >= EXTRACT(DOY FROM DATE(?))) AND (EXTRACT(DOY FROM birthday) <= EXTRACT(DOY FROM DATE(?))) ORDER BY EXTRACT(DOY FROM birthday)",Time.now+3.day,Time.now+10.day])
+    end
+
+    if (Time.now+3.day+1.month).year - (Time.now+11.day).year > 0
+      @users2=User.find_by_sql(["SELECT * FROM users WHERE (EXTRACT(DOY FROM birthday) >= EXTRACT(DOY FROM DATE(?))) OR (EXTRACT(DOY FROM birthday) <= EXTRACT(DOY FROM DATE(?))) ORDER BY EXTRACT(DOY FROM birthday)",Time.now+11.day,Time.now+3.day+1.month])
+    else
+      @users2=User.find_by_sql(["SELECT * FROM users WHERE (EXTRACT(DOY FROM birthday) >= EXTRACT(DOY FROM DATE(?))) AND (EXTRACT(DOY FROM birthday) <= EXTRACT(DOY FROM DATE(?))) ORDER BY EXTRACT(DOY FROM birthday)",Time.now+11.day,Time.now+3.day+1.month])
+    end
     if !@users1.empty? || !@users2.empty? 
       UserMailer.birthday(@users1,@users2).deliver  
     end
