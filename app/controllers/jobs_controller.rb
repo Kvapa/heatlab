@@ -449,21 +449,21 @@ class JobsController < ApplicationController
 
       if @jobmonth[0].workload <5
         if @job.usertype == 0
-          sheet[9, 8] = @jobmonth[0].workload.to_s + ' hodiny/týdně'
+          sheet[9, 8] = (@jobmonth[0].workload.to_f/40).round(2)
         else
           sheet[9, 8] = @jobmonth[0].workload.to_s + ' hodiny/měsíčně'
         end
       else
         if @job.usertype == 0
-          sheet[9, 8] = @jobmonth[0].workload.to_s + ' hodin/týdně'  
+          sheet[9, 8] = (@jobmonth[0].workload.to_f/40).round(2) 
           else
           sheet[9, 8] = @jobmonth[0].workload.to_s + ' hodin/měsíčně'
         end
       end
       if @job.usertype == 0 && @job.joined
-          sheet[11, 8] =  (workloads[0]-@jobmonth[0].workload).to_s + ' hodin/týdně'
+          sheet[11, 8] =  ((workloads[0]-@jobmonth[0].workload).to_f/40).round(2)
       else 
-        sheet[11, 8] = '0 hodin/týdně'
+        sheet[11, 8] = '0'
       end
       @jobdays.each_with_index do |jobday,index|
         sheet[15+index, 1] = wdays[jobday.day.wday]

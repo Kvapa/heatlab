@@ -77,7 +77,42 @@
     <td><%= link_to 'Smazat', user, method: :delete, data: { confirm: 'Opravdu chcete smazat uživatele?' } %></td>
   </tr>
 <% end %>
-</table></p>
+</table>
+<hr>
+<h3>Neaktivní</h3>
+<table>
+  <tr>
+
+    <th>Příjmení</th>
+    <th>Jméno</th>
+    <th>Celé jméno</th>
+    <th>Osobní číslo</th>
+    <th>Login</th>
+    <th>Email</th>
+    <th>Admin</th>
+    <th>Datum narození</th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @users_inact.each do |user| %>
+  <tr>
+    <td><%= user.surname %></td>
+    <td><%= user.firstname %></td>
+    <td><%= user.fullname %></td>
+    <td><%= user.personal_number %></td>
+    <td><%= user.login %></td>
+    <td><%= user.email %></td>
+    <td><% if user.admin? %> ano <% else %> ne <% end %></td>
+    <td><%= user.birthday.strftime('%d.%m.%Y') if !user.birthday.blank? %></td>
+    <td><%= link_to 'Editovat', edit_user_path(user) %></td>
+    <td><%= link_to 'Smazat', user, method: :delete, data: { confirm: 'Opravdu chcete smazat uživatele?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+
+</p>
 
 
 

@@ -1,3 +1,5 @@
+  <%#=  @projects.inspect %>
+  <%#=  @projects.count %>
   <p>
   Jméno: <b><%= @user.surname + " " + @user.firstname %></b><br />
   Rok: <%= @main_worklist.year.year %>
@@ -38,20 +40,26 @@
 <% @projects.each do |p| %>
   <tr>
     <% job=Job.where("usertype = 0 and project_id=? and user_id=?",p.id,@user.id) %>
+    <%#=  job.inspect %>
     <% if !job.blank? %>
-       <td> <%= p.workname %> </td>
+      <td> <%= p.workname %> </td>
       <% (1..12).each do |n| %>
         <% month=Jobmonth.where("job_id=? and month=?",job[0].id, Date.new(@main_worklist.year.year,n).beginning_of_month) %>
-        <% if month[0] 
-          if result[1][n-1]
-            result[1][n-1] += month[0].workload
-          else
-            result[1][n-1] = month[0].workload
-          end
-        end 
-        %>
-        <td><center><%= month[0].workload if month[0] %><br /><%=  check_box(p.id, n, {}, 1, 0) if month[0] %> </center> </td>
-      <% end %><td><%=  text_field(p.id,"hours",:maxlength => 3) %></td>
+      
+        <td>
+        <% if month[0] %>
+          <% if job[0].start_date<month[0].month && month[0].month<job[0].end_date %>
+            <% if result[1][n-1]
+              result[1][n-1] += month[0].workload
+            else
+              result[1][n-1] = month[0].workload
+            end %>
+            <center><%= month[0].workload if month[0] %><br /><%=  check_box(p.id, n, {}, 1, 0) if month[0] %> </center>
+          <% end %>   
+        <% end %> 
+        </td>
+      <% end %>
+      <td><%=  text_field(p.id,"hours",:maxlength => 5) %></td>
     <% end %>
   </tr>
 <% end %>

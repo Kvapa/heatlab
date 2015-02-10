@@ -45,7 +45,7 @@
       
   </div>
 
-  <% if params[:action] == "new" || "create" %>
+  <% if params[:action] == "new" %>
     <div class="field">
       <%= f.label :hours_per_week, "Úvazek (hodiny týdně nebo měsíčně)" %>
       <%= f.text_field :hours_per_week, :maxlength =>4, :value => 0 %>

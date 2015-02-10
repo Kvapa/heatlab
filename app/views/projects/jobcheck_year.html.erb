@@ -39,9 +39,15 @@
 		</td>
 		<% (1..12).each do |n| %>
    			<% @month=Jobmonth.where("job_id=? and month=?",job.id, Date.new(params[:year].to_i,n).beginning_of_month) %>
-   			<td><center><%= @month[0].workload if @month[0]  %><br /><%=  check_box(job.id, n, {}, 1, 0) if @month[0] %> </center> </td>
+   			<td>
+   			<% if @month[0] %>
+   				<% if job.start_date<@month[0].month && @month[0].month<job.end_date%>
+   					<center><%= @month[0].workload if @month[0] %><br /><%= check_box(job.id, n, {}, 1, 0) if @month[0] %> </center> 
+   				<% end %> 	
+    		<% end %> 
+    		</td>
     	<% end %>
-    	<td><center><%=  text_field(job.id,"hours",:maxlength => 4) %></center></td>
+    	<td><center><%= text_field(job.id,"hours",:maxlength => 4) %></center></td>
 	</tr>
 	<% end %>
 	<tr>

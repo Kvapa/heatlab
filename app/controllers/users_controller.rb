@@ -7,8 +7,11 @@ class UsersController < ApplicationController
 
   def index
     
-    @users = User.where("worktype = 0").order('surname ASC')
-    @users_ex = User.where("worktype = 1").order('surname ASC')
+    @users = User.where("worktype = 0").where("active = true").order('surname ASC')
+    @users_ex = User.where("worktype = 1").where("active = true").order('surname ASC')
+
+    @users_inact = User.where("active = false").order('surname ASC')
+
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @users }

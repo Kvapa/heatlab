@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
 
 	validates :login, :length => { :minimum => 5, :maximum => 50 }
 
-  attr_accessible :email, :firstname, :fullname, :login, :surname, :password, :password_confirmation, :personal_number, :worktype, :admin, :decree50_proper, :contract, :contract_end_proper, :retire_proper, :birthday_proper
+  attr_accessible :email, :firstname, :fullname, :login, :surname, :password, :password_confirmation, :personal_number, :worktype, :admin, :decree50_proper, :contract, :contract_end_proper, :retire_proper, :birthday_proper, :active
 
   has_many :jobs
   has_many :projects, :through => :jobs

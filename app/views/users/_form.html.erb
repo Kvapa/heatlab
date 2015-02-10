@@ -45,6 +45,10 @@
       <%= f.select :worktype,[['Heatlab', 0],['externista', 1]] %>
     </div>
     <div class="field">
+      <%= f.label :active,"Aktivní" %><br />
+      <%= f.select :active,[['Ano', true],['Ne', false]] %>
+    </div>
+    <div class="field">
       <%= f.label :personal_number,"Osobní číslo" %><br />
       <%= f.text_field :personal_number %>
     </div>
