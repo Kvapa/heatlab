@@ -48,7 +48,7 @@
       
         <td>
         <% if month[0] %>
-          <% if job[0].start_date<month[0].month && month[0].month<job[0].end_date %>
+          <% if job[0].start_date<=month[0].month && month[0].month<=job[0].end_date %>
             <% if result[1][n-1]
               result[1][n-1] += month[0].workload
             else
