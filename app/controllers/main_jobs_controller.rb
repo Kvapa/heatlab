@@ -325,14 +325,28 @@ class MainJobsController < ApplicationController
     @main_worklist = MainWorklist.find(params[:main_worklist_id])
     @main_job = MainJob.find(params[:main_job_id]) 
     @user=User.find(@main_job.user_id)
-    @projects=User.find(@main_job.user_id).projects
+    @projects=User.find(@main_job.user_id).projects.uniq
+    @jobs=[]
+    @projects.each do |p|
+      jobss=Job.where("project_id=? and user_id=?",p.id,@user.id)
+      jobss.each do |j|
+        @jobs.push(j)
+      end
+    end 
   end
 
   def jobcheck_update
     @main_worklist = MainWorklist.find(params[:main_worklist_id])
     @main_job = MainJob.find(params[:main_job_id]) 
     @user=User.find(@main_job.user_id)
-    @projects=User.find(@main_job.user_id).projects
+    @projects=User.find(@main_job.user_id).projects.uniq
+    @jobs=[]
+    @projects.each do |p|
+      jobss=Job.where("project_id=? and user_id=?",p.id,@user.id)
+      jobss.each do |j|
+        @jobs.push(j)
+      end
+    end  
 
     if numeric?(params[:heatlab]["hours"])
       params[:heatlab].each_with_index do |a,i| 
@@ -345,14 +359,20 @@ class MainJobsController < ApplicationController
       end
     end
 
-    @projects.each do |p|
-      if numeric?(params[p.id.to_s]["hours"])
-        params[p.id.to_s].each_with_index do |a,i| 
-          if i<params[p.id.to_s].size-1 
+    @jobs.each do |j|
+      if numeric?(params[j.id.to_s]["hours"])
+        params[j.id.to_s].each_with_index do |a,i| 
+          if i<params[j.id.to_s].size-1 
             if a[1] == "1"
-              job=Job.where("project_id=? and user_id=?",p.id,@user.id)
-              jobmonth=Jobmonth.where("job_id=? and month=?",job[0].id, Date.new(@main_worklist.year.year,a[0].to_i).beginning_of_month) 
-              jobmonth[0].update_attribute(:workload,params[p.id.to_s][:hours].to_f)
+              if params[j.id.to_s]["change_all"] == "1"
+                jobmonths=Jobmonth.where("job_id=? and month >= ? ",j.id, Date.new(@main_worklist.year.year,a[0].to_i).beginning_of_month)
+                jobmonths.each do |job|
+                  job.update_attribute(:workload,params[j.id.to_s][:hours].to_f)    
+                end       
+              else 
+                jobmonth=Jobmonth.where("job_id=? and month=?",j.id, Date.new(@main_worklist.year.year,a[0].to_i).beginning_of_month) 
+                jobmonth[0].update_attribute(:workload,params[j.id.to_s][:hours].to_f)
+              end
             end
           end
         end
