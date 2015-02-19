@@ -47,7 +47,7 @@
     		<% end %> 
     		</td>
     	<% end %>
-    	<td><center><%= text_field(job.id,"hours",:maxlength => 4) %></center></td>
+    	<td><center><%= text_field(job.id,"hours",:maxlength => 4) %> <%= check_box(job.id, "change_all", {}, 1, 0) %></center>  </td>
 	</tr>
 	<% end %>
 	<tr>
@@ -98,7 +98,7 @@
 	   			<% @month=Jobmonth.where("job_id=? and month=?",job.id, Date.new(params[:year].to_i,n).beginning_of_month) %>
 	   			<td><center><%= @month[0].workload if @month[0] %><br /><%=  check_box(job.id, n, {}, 1, 0) if @month[0] %> </center> </td>
 	    	<% end %>
-	    	<td><center><%=  text_field(job.id,"hours",:maxlength => 4) %></center></td>
+	    	<td><center><%=  text_field(job.id,"hours",:maxlength => 4) %><%= check_box(job.id, "change_all_dpp", {}, 1, 0) %></center></td>
 		</tr>
 		<% end %>
 		<tr>

@@ -103,8 +103,15 @@ class ProjectsController < ApplicationController
         params[job.id.to_s].each_with_index do |a,i| 
           if i<params[job.id.to_s].size-1 
             if a[1] == "1"
-              jobmonth=Jobmonth.where("job_id=? and month=?",job.id, Date.new(params[:year].to_i,a[0].to_i).beginning_of_month) 
-              jobmonth[0].update_attribute(:workload,params[job.id.to_s][:hours].to_f)
+              if params[job.id.to_s]["change_all"] == "1"
+                jobmonths=Jobmonth.where("job_id=? and month>=?",job.id, Date.new(params[:year].to_i,a[0].to_i).beginning_of_month) 
+                jobmonths.each do |j|
+                  j.update_attribute(:workload,params[job.id.to_s][:hours].to_f) 
+                end 
+              else
+                jobmonth=Jobmonth.where("job_id=? and month=?",job.id, Date.new(params[:year].to_i,a[0].to_i).beginning_of_month) 
+                jobmonth[0].update_attribute(:workload,params[job.id.to_s][:hours].to_f)
+              end
             end
           end
         end
@@ -116,8 +123,15 @@ class ProjectsController < ApplicationController
         params[job.id.to_s].each_with_index do |a,i| 
           if i<params[job.id.to_s].size-1 
             if a[1] == "1"
-              jobmonth=Jobmonth.where("job_id=? and month=?",job.id, Date.new(params[:year].to_i,a[0].to_i).beginning_of_month) 
-              jobmonth[0].update_attribute(:workload,params[job.id.to_s][:hours].to_f)
+              if params[job.id.to_s]["change_all_dpp"] == "1"
+                jobmonths=Jobmonth.where("job_id=? and month>=?",job.id, Date.new(params[:year].to_i,a[0].to_i).beginning_of_month) 
+                jobmonths.each do |j|
+                  j.update_attribute(:workload,params[job.id.to_s][:hours].to_f) 
+                end  
+              else
+                jobmonth=Jobmonth.where("job_id=? and month=?",job.id, Date.new(params[:year].to_i,a[0].to_i).beginning_of_month) 
+                jobmonth[0].update_attribute(:workload,params[job.id.to_s][:hours].to_f)
+              end
             end
           end
         end
