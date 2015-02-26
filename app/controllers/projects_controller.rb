@@ -164,7 +164,11 @@ class ProjectsController < ApplicationController
       (1..12).each do |n|
         month=Jobmonth.where("job_id=? and month=?",job.id, Date.new(params[:year].to_i,n).beginning_of_month)
         if month[0]
-           sheet[i+5, n]=month[0].workload
+          if job.start_date<=month[0].month && month[0].month<=job.end_date
+            sheet[i+5, n]=month[0].workload
+          else
+            sheet[i+5, n]='-'
+          end
         end  
       end         
     end
@@ -180,8 +184,12 @@ class ProjectsController < ApplicationController
       (1..12).each do |n|
         month=Jobmonth.where("job_id=? and month=?",job.id, Date.new(params[:year].to_i,n).beginning_of_month)
         if month[0]
-           sheet[i+5, n]=month[0].workload
-        end  
+          if job.start_date<=month[0].month && month[0].month<=job.end_date
+            sheet[i+5, n]=month[0].workload
+          else
+            sheet[i+5, n]='-'
+          end
+        end   
       end         
     end
 
