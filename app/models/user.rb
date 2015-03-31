@@ -31,6 +31,7 @@ class User < ActiveRecord::Base
   def decree50_proper=(var)
     if !var.blank?
       self.decree50=Date.strptime(var,'%d.%m.%Y')
+    else self.decree50=nil
     end
   end
 
@@ -43,6 +44,7 @@ class User < ActiveRecord::Base
   def contract_end_proper=(var)
     if !var.blank?
       self.contract_end=Date.strptime(var,'%d.%m.%Y')
+    else self.contract_end=nil
     end
   end
 
@@ -55,6 +57,7 @@ class User < ActiveRecord::Base
   def retire_proper=(var)
     if !var.blank?
       self.retire=Date.strptime(var,'%d.%m.%Y')
+    else self.retire=nil
     end
   end
 
@@ -67,6 +70,7 @@ class User < ActiveRecord::Base
   def birthday_proper=(var)
     if !var.blank?
       self.birthday=Date.strptime(var,'%d.%m.%Y')
+    else self.birthday=nil
     end
   end
 
@@ -79,6 +83,7 @@ class User < ActiveRecord::Base
   def rider_proper=(var)
     if !var.blank?
       self.rider=Date.strptime(var,'%d.%m.%Y')
+    else self.rider=nil
     end
   end
 end
