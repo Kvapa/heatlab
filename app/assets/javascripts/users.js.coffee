@@ -30,6 +30,13 @@ jQuery ->
 		firstDay: 1 
 		monthNamesShort: [ "Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec" ]
 
+	$('#user_rider_proper').datepicker
+		changeMonth: true
+		changeYear: true
+		dateFormat: 'dd.mm.yy'
+		firstDay: 1 
+		monthNamesShort: [ "Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec" ]	
+
 	$('#user_birthday_proper').datepicker
 		changeMonth: true
 		changeYear: true

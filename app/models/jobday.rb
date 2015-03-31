@@ -5,7 +5,7 @@ class Jobday < ActiveRecord::Base
   def test
   if self.day_status == 0 
   	self.hours =0
-  	self.description =''	
+  	#self.description =''	
   	end
   end
 

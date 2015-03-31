@@ -1,6 +1,6 @@
 <%= render "menu" %>
 
-<h2> Elektrotechnická kvalifikace (vyhl. 50/1978 Sb.) </h2>
+<h2> Školení řidičů </h2>
 
 <p>
 <table>
@@ -14,12 +14,12 @@
   	
     <td><%= link_to user.sur_firstname , edit_user_path(user)%></td>
     <td>
-    <% if user.decree50 < DateTime.now.to_date %>
+    <% if user.rider < DateTime.now.to_date %>
   		<span style="color: red">	
   	<% else %>
   		<span style="color: green">	
   	<% end %>
-    <%= user.decree50.strftime('%d.%m.%Y') %>
+    <%= user.rider.strftime('%d.%m.%Y') %>
     	</span>
     </td>
     
@@ -28,6 +28,8 @@
 
   <tr>
    <td> <hr></td> 
+   
+   <td> </td> 
   </tr>
 
 <% @users2.each do |user| %>

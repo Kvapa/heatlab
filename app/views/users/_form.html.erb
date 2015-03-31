@@ -71,8 +71,12 @@
     </div>
     </p>
     <div class="field">
-      <%= f.label :decree50,"Vyhláška 50 - platnost do:" %><br />
+      <%= f.label :decree50,"Elektro vyhláška 50 - platnost do:" %><br />
       <%= f.text_field :decree50_proper %><br />
+    </div>
+    <div class="field">
+      <%= f.label :rider,"Školení řidičů - platnost do:" %><br />
+      <%= f.text_field :rider_proper %><br />
     </div>
      <div class="field">
       <%= f.label :retire,"Odchod do důchodu" %><br />
@@ -87,5 +91,4 @@
   <div class="actions">
     <%= f.submit "Uložit" %>
   </div>
-
 <% end %>

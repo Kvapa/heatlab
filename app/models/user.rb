@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
 
 	validates :login, :length => { :minimum => 5, :maximum => 50 }
 
-  attr_accessible :email, :firstname, :fullname, :login, :surname, :password, :password_confirmation, :personal_number, :worktype, :admin, :decree50_proper, :contract, :contract_end_proper, :retire_proper, :birthday_proper, :active
+  attr_accessible :email, :firstname, :fullname, :login, :surname, :password, :password_confirmation, :personal_number, :worktype, :admin, :decree50_proper, :contract, :contract_end_proper, :retire_proper, :birthday_proper, :active, :rider_proper
 
   has_many :jobs
   has_many :projects, :through => :jobs
@@ -67,6 +67,18 @@ class User < ActiveRecord::Base
   def birthday_proper=(var)
     if !var.blank?
       self.birthday=Date.strptime(var,'%d.%m.%Y')
+    end
+  end
+
+  def rider_proper
+    if rider?
+      rider.strftime('%d.%m.%Y')
+    end
+  end
+
+  def rider_proper=(var)
+    if !var.blank?
+      self.rider=Date.strptime(var,'%d.%m.%Y')
     end
   end
 end

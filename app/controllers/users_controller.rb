@@ -71,7 +71,11 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.update_attributes(params[:user])
         if admin?
-          format.html { redirect_to users_path, notice: 'Údaje o uživateli byly úspěšně změněny.' }
+          if !session[:previous_url].nil?
+            format.html { redirect_to session[:previous_url] }
+          else
+            format.html { redirect_to users_path, notice: 'Údaje o uživateli byly úspěšně změněny.' }
+          end
         else
           format.html { redirect_to edit_user_path(@user), notice: 'Údaje o uživateli byly úspěšně změněny.' }
         end
@@ -98,14 +102,20 @@ class UsersController < ApplicationController
 
   def vyhlaska
     @users = User.where("decree50 IS NOT NULL").order('surname ASC') 
+    @users2 = User.where("decree50 IS NULL").order('surname ASC') 
   end 
 
-  def contract
+  def smlouva
     @users = User.where("contract IS NOT NULL").order('surname ASC') 
   end 
 
-  def retire
+  def duchod
     @users = User.where("retire IS NOT NULL").order('surname ASC') 
+  end
+
+   def ridic
+    @users = User.where("rider IS NOT NULL").order('surname ASC') 
+    @users2 = User.where("rider IS NULL").order('surname ASC') 
   end
 
   def self.birthdays

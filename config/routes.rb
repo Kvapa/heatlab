@@ -58,9 +58,13 @@ Heatlab::Application.routes.draw do
 
   resources :users do
     collection { get :vyhlaska}
-    collection { get :contract}
-    collection { get :retire}
+    collection { get :smlouva}
+    collection { get :duchod}
+    collection { get :ridic}
   end
+
+  get '/users/:id/edit/:from',  to: 'users#edit' 
+  put '/users/:id/edit/:from',  to: 'users#edit' 
 
   resources :sessions
   

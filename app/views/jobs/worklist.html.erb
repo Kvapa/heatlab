@@ -122,7 +122,7 @@ Hlavní docházka neexistuje nebo není zamknutá
 						<% else %>
 				  			<td><%= f.select :day_status, [['Pracovní den', 2],['Služební cesta', 5],['Nepracovní den', 0],['Dovolená', 3],['Nemocenská',4],['Svátek', 1]], :disabled => ((jobday.day.wday == 6 || jobday.day.wday == 0 || jobday.day_status == 1 ) ? true : false) %></td>
 				  		<% end %>
-				  		<% if jobday.day_status ==3
+				  		<% if jobday.day_status !=2
 							jobday.description=''
 							jobday.save
 						end %>
