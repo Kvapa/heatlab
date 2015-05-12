@@ -352,8 +352,15 @@ class MainJobsController < ApplicationController
       params[:heatlab].each_with_index do |a,i| 
         if i<params[:heatlab].size-1 
           if a[1] == "1"
-            main_jobmonth=MainJobmonth.where("main_job_id=? and month=?",params[:main_job_id],Date.new(@main_worklist.year.year,a[0].to_i).beginning_of_month)
-            main_jobmonth[0].update_attribute(:workload,params[:heatlab][:hours].to_f)
+            if params["heatlab"]["change_all"] == "1"
+              main_jobmonths=MainJobmonth.where("main_job_id=? and month >= ?",params[:main_job_id],Date.new(@main_worklist.year.year,a[0].to_i).beginning_of_month)
+              main_jobmonths.each do |job|
+                job.update_attribute(:workload,params[:heatlab][:hours].to_f)            
+              end 
+            else
+              main_jobmonth=MainJobmonth.where("main_job_id=? and month=?",params[:main_job_id],Date.new(@main_worklist.year.year,a[0].to_i).beginning_of_month)
+              main_jobmonth[0].update_attribute(:workload,params[:heatlab][:hours].to_f)
+            end
           end
         end
       end

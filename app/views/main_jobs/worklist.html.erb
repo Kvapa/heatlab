@@ -73,7 +73,7 @@
 		  		<td><%= f.time_select :until,:minute_step => 30,:disabled => ((main_jobday.day.wday == 6 || main_jobday.day.wday == 0 || main_jobday.day_status == 0 || main_jobday.day_status == 1 || main_jobday.day_status == 3  || main_jobday.day_status == 4) ? true : false) %></td>
 		  		<td><%=  main_jobday.hours %></td>
 		  		<% if main_jobday.day_status == 5 %>
-		  		<td><%= f.collection_select( :work_trip, Project.find(:all, :order => "workname ASC"), :id, :workname, :include_blank => "- Vyberte jméno -" )  %></td>
+		  		<td><%= f.collection_select( :work_trip, Project.find(:all, :order => "workname ASC"), :id, :workname, :include_blank => "- Vyberte jméno -")  %></td>
 		  		<td><%= f.text_field :trip_town %></td>
 		  		<% end %> 
 	  	</tr>

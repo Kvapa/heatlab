@@ -35,7 +35,9 @@
        result[0][n-1] = 0
       end 
       %>
-	<% end %><td><%=  text_field("heatlab","hours",:maxlength => 3) %></td>
+	<% end %><td><%=  text_field("heatlab","hours",:maxlength => 5) %>
+  <br />
+  <%= check_box("heatlab", "change_all", {}, 1, 0) %>  </td>
   </tr><td colspan="14"><hr></td></tr>
    
   <% @jobs.each do |j| %>
