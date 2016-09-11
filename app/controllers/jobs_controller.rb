@@ -666,7 +666,7 @@ class JobsController < ApplicationController
       book.write 'public/souhrnny-cache.xls'
       send_file 'public/souhrnny-cache.xls', :type => "application/vnd.ms-excel",:filename => @project.workname + "_" + User.find(@job.user_id).surname + "_" + params[:year] + "-" + months[params[:month].to_i] +".xls", :stream => false    
 
-  elsif @project.xls == 3
+    elsif @project.xls == 3
       require 'spreadsheet'
       Spreadsheet.client_encoding = 'UTF-8'
   
@@ -786,13 +786,125 @@ class JobsController < ApplicationController
         sheet[30, 4] = "Jaroslav Horský"
         sheet[31, 4] = "řešitel"  
       end
-
-      
-
       book.write 'public/tacr-cache.xls'
       send_file 'public/tacr-cache.xls', :type => "application/vnd.ms-excel", :filename => @project.workname + "_" + User.find(@job.user_id).surname + "_" + params[:year] + "-" + months[params[:month].to_i] +".xls", :stream => false    
-    
+     
+     elsif @project.xls == 4
+      require 'spreadsheet'
+      Spreadsheet.client_encoding = 'UTF-8'
+  
+      book = Spreadsheet.open 'public/uhli.xls'
+      
+
+      sheet = book.worksheet 0
+      wdays = {0 => "Ne", 1 => "Po", 2 => "Út",3 => "St", 4 => "Čt",5 => "Pá", 6 => "So"}
+      months = {1 => "Leden", 2 => "Únor", 3 => "Březen", 4 => "Duben", 5 => "Květen", 6 => "Červen",
+                   7 => "Červenec", 8 => "Srpen", 9 => "Září", 10 => "Říjen", 11 => "Listopad", 12 => "Prosinec"}
+      work_status = {0 => "Nepracovní den", 1 => "Svátek", 3 => "Dovolená", 4 => "Nemoc"}
+
+      sheet[2, 4] = @project.number
+      sheet[3, 4] = @project.name
+      sheet[4, 1] = User.find(@job.user_id).fullname
+      sheet[5, 1] = months[params[:month].to_i]
+      sheet[6, 1] = params[:year]
+      sheet[8, 4] = ProjectPosition.find(@job.position).name
+
+      holiday_days=""
+      holiday_count=0
+      holiday_hours=0
+
+      sick_days=""
+      sick_count=0
+      sick_hours=0
+
+      pub_day = 0
+
+      days=[]
+      @jobdays.each_with_index do |jobday,index|
+        if (jobday.day_status == 2 || jobday.day_status == 5)  && jobday.description != "" 
+            days.push(jobday.description)
+
+        elsif jobday.day_status == 3
+          if holiday_days ==""
+            holiday_days += jobday.day.day.to_s
+            holiday_count +=1
+            holiday_hours +=jobday.hours
+          else
+            holiday_days += ", " + jobday.day.day.to_s
+            holiday_count +=1
+            holiday_hours +=jobday.hours
+          end
+        elsif jobday.day_status == 4
+          if sick_days ==""
+            sick_days += jobday.day.day.to_s
+            sick_count +=1
+            sick_hours +=jobday.hours
+          else
+            sick_days += ", " + jobday.day.day.to_s
+            sick_count +=1
+            sick_hours +=jobday.hours
+          end
+        elsif jobday.day_status == 1
+          pub_day += 8 * @jobmonth[0].workload.to_f / 40 * 5 / @jobmonth[0].workdays.to_f  
+        end 
+      end 
+
+      sum_pub = 0
+      sum_pubday = 0
+      sum_work = 0
+      sum_workday = 0
+      sum_sick = 0
+      sum_sickday = 0
+      sum_holi = 0
+      sum_holiday = 0
+
+      @jobdays.each do |day|
+        if day.day_status == 1
+          sum_pub += day.hours
+          sum_pubday += 1
+        end
+
+        if day.day_status == 2
+          sum_work += day.hours
+          sum_workday += 1
+        end
+
+        if day.day_status == 3
+          sum_holi += day.hours
+          sum_holiday += 1
+        end
+
+        if day.day_status == 4
+          sum_sick += day.hours
+          sum_sickday += 1
+        end 
+      end 
+
+      t=""
+      res=Hash[days.group_by {|x| x}.map {|k,v| [k,v.count]}]
+      res=res.sort_by {|k,v| v}.reverse
+
+      hours_sum = 0
+      res.each_with_index do |x,i|
+        t=t+x[0]+"\n"
+      end
  
+      sheet[9, 0] = t
+
+      sheet[10, 4] =  sum_pub + sum_work 
+
+      sheet[14, 4] = sum_holiday
+      sheet[15, 4] = sum_holi
+
+      sheet[18, 4] = sum_sickday
+      sheet[19, 4] = sum_sick
+
+      sheet[24, 4] = @jobmonth[0].month.end_of_month.strftime("%d.%m.%Y")
+      sheet[29, 4] = @jobmonth[0].month.end_of_month.strftime("%d.%m.%Y")
+
+      book.write 'public/uhli-cache.xls'
+      send_file 'public/uhli-cache.xls', :type => "application/vnd.ms-excel", :filename => @project.workname + "_" + User.find(@job.user_id).surname + "_" + params[:year] + "-" + months[params[:month].to_i] +".xls", :stream => false    
+    
     end
   end
 end
