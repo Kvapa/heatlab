@@ -890,7 +890,7 @@ class JobsController < ApplicationController
       end
  
       sheet[9, 0] = t
-
+      sheet[10, 4] = @jobmonth[0].workload + " hodin/týden"
       sheet[11, 4] =  sum_pub + sum_work 
 
       sheet[15, 4] = sum_holiday
