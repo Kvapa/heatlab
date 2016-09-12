@@ -891,16 +891,16 @@ class JobsController < ApplicationController
  
       sheet[9, 0] = t
 
-      sheet[10, 4] =  sum_pub + sum_work 
+      sheet[11, 4] =  sum_pub + sum_work 
 
-      sheet[14, 4] = sum_holiday
-      sheet[15, 4] = sum_holi
+      sheet[15, 4] = sum_holiday
+      sheet[16, 4] = sum_holi
 
       sheet[18, 4] = sum_sickday
       sheet[19, 4] = sum_sick
 
-      sheet[24, 4] = @jobmonth[0].month.end_of_month.strftime("%d.%m.%Y")
-      sheet[29, 4] = @jobmonth[0].month.end_of_month.strftime("%d.%m.%Y")
+      sheet[25, 4] = @jobmonth[0].month.end_of_month.strftime("%d.%m.%Y")
+      sheet[30, 4] = @jobmonth[0].month.end_of_month.strftime("%d.%m.%Y")
 
       book.write 'public/uhli-cache.xls'
       send_file 'public/uhli-cache.xls', :type => "application/vnd.ms-excel", :filename => @project.workname + "_" + User.find(@job.user_id).surname + "_" + params[:year] + "-" + months[params[:month].to_i] +".xls", :stream => false    
