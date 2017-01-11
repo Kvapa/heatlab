@@ -656,8 +656,12 @@ class JobsController < ApplicationController
         if @job.user_id == 2
           sheet[59, 4] = "Jaroslav Horský"
           sheet[59, 5] = "vedoucí pracoviště"
-        else  
-          sheet[59, 4] = "Miroslav Raudenský"
+        else
+          if @project.id == 19
+            sheet[59, 4] = "Michal Pohanka"  
+          else  
+            sheet[59, 4] = "Miroslav Raudenský"
+          end
           sheet[59, 5] = "garant"
         end
       end
